@@ -16,6 +16,8 @@ public class DynamicSlicing {
 	
 	private int lineNumberOfTargetStatement;
 	
+	private String containerName;
+	
 	public String getInputData() {
 		return inputData;
 	}
@@ -30,10 +32,6 @@ public class DynamicSlicing {
 
 	public String getWorkDirectory() {
 		return workDirectory;
-	}
-
-	public void setWorkDirectory(String workDirectory) {
-		this.workDirectory = workDirectory;
 	}
 
 	public String getStudentID() {
@@ -63,11 +61,11 @@ public class DynamicSlicing {
 	public String getWorkDirectoryInContainer() {
 		return workDirectoryInContainer;
 	}
-
-	public void setWorkDirectoryInContainer(String workDirectoryInContainer) {
-		this.workDirectoryInContainer = workDirectoryInContainer;
-	}
 	
+	public void setLineNumberOfTargetStatement(int lineNumber) {
+		this.lineNumberOfTargetStatement = lineNumber;
+	}
+
 	private String getInputDataInOneLine() {
 	    String str = this.inputData.replace("\r\n", "\n"); // convert windows line endings to linux format 
 	    str = str.replace("\r", "\n"); // convert (remaining) mac line endings to linux format
@@ -84,103 +82,43 @@ public class DynamicSlicing {
 		return cFileNameWithoutExtension;
 	}
 	
-	private void createMakeFile() {
-		File myObj = new File(this.workDirectory+"Makefile");
-		try {
-			if (myObj.createNewFile()) {
-			    System.out.println("File created: " + myObj.getName());
-			  } else {
-			    System.out.println("Makefile File already exists.");
-			  }
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	private void writeMakeFile() {
-		 try {
-			FileWriter myWriter = new FileWriter(this.workDirectory+"Makefile");
-			myWriter.write("NAME = "+ this.getcFileNameWithoutExtension() +"\n" + 
-					"LDFLAGS = -lm\n" + 
-					"INPUT ?= "+ this.getInputDataInOneLine() +"\n" + 
-					"CRITERION ?= -criterion-loc=loc.txt\n" + 
-					"#CRITERION ?= -criterion-inst=criterion-inst.txt\n" + 
-					"MAPPING ?= -mapping-function=main\n" + 
-					"\n" + 
-					"include ../../Makefile.common");
-			myWriter.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	private boolean deleteDirectory(File directoryToBeDeleted) {
-	    File[] allContents = directoryToBeDeleted.listFiles();
-	    if (allContents != null) {
-	        for (File file : allContents) {
-	            deleteDirectory(file);
-	        }
-	    }
-	    return directoryToBeDeleted.delete();
-	}
-	
-	private void createLocTxtFile() {
-		File myObj = new File(this.workDirectory+"loc.txt");
-		try {
-			if (myObj.createNewFile()) {
-			    System.out.println("File created: " + myObj.getName());
-			  } else {
-			    System.out.println("loc.txt File already exists.");
-			  }
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
 	public void execute(){
+		
+		FileHandler fileHandler = new FileHandlerImpl();
 
-		String containerName = this.studentID+"_"+this.questiotnID;
+		this.initializeContainerName();
+		this.initializeWorkDirectory();
+		this.initializeWorkDirectoryInContainerName();
+		fileHandler.deleteWorkDirectory(new File(this.workDirectory));
+		fileHandler.createWorkDirectory(new File(this.workDirectory));
+		CprogramFilePreprocessor preprocessor  = new CprogramFilePreprocessorStub();
+		fileHandler.writePreprocessedCprogramFile(this.workDirectory, this.cFileName, preprocessor.getPreprocessProgramContent());
+		fileHandler.writeMakeFile(this.workDirectory,this.getcFileNameWithoutExtension(),this.getInputDataInOneLine());
+		fileHandler.writeLocTxtFile(this.workDirectory,this.cFileName,this.lineNumberOfTargetStatement);
 		Giri giri = new GiriImpl();
 		giri.createContainer(containerName);
-		deleteDirectory(new File(this.workDirectory));
-		createDirectory(new File(this.workDirectory));
-		createMakeFile();
-		writeMakeFile();
-		createLocTxtFile();
-		writeLocTxtFile();
+		giri.createWorkDirectoryInContainer(this.workDirectoryInContainer);
 		giri.copyMakeFileIntoContainer(this.workDirectory, this.workDirectoryInContainer);
 		giri.copyLotTxtFileIntoContainer( this.workDirectory, this.workDirectoryInContainer);
+		giri.copyCProgramFileIntoContainer(this.workDirectory, this.workDirectoryInContainer, this.cFileName);
 		giri.make(this.workDirectoryInContainer);
-		giri.downloadSlicLocFileIntoWorkDirectory(this.getcFileNameWithoutExtension() , this.workDirectoryInContainer, this.workDirectory);
-		DynamicSliceResultDTO result = generateDynamicSliceResult();
+		giri.downloadSlicLocFileIntoWorkDirectory(this.workDirectoryInContainer, this.workDirectory, this.getcFileNameWithoutExtension());
+		giri.stopContainer(containerName);
+		giri.removeContainer(containerName);
+
 	}
 
-	private DynamicSliceResultDTO generateDynamicSliceResult() {
-		// TODO Auto-generated method stub
-		return null;
+	private void initializeContainerName() {
+		this.containerName = this.studentID+"_"+this.questiotnID;
 	}
 
-	private void writeLocTxtFile() {
-		try {
-			FileWriter myWriter = new FileWriter(this.workDirectory+"Makefile");
-			myWriter.write(this.cFileName + " " + this.lineNumberOfTargetStatement);
-			myWriter.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	private void initializeWorkDirectoryInContainerName() {
+		this.workDirectoryInContainer = "/giri/test/UnitTests/HW/";		
 	}
 
-	private void createDirectory(File file) {
-		file.mkdirs();
+	private void initializeWorkDirectory() {
+		this.workDirectory = "/home/aaron/Desktop/B/";
 	}
 
-
-
-	
-	
 
 }
