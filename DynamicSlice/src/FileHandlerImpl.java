@@ -1,6 +1,10 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class FileHandlerImpl implements FileHandler{
 	
@@ -71,6 +75,31 @@ public class FileHandlerImpl implements FileHandler{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public static void main(String[] args) {
+		FileHandlerImpl hh = new FileHandlerImpl();
+		List<Integer> list = hh.readSliceLocFile("/home/aaron/Desktop/B/","DD");
+		for(Integer number:list) {
+			System.out.println(number);
+		}
+	}
+	
+	public List<Integer> readSliceLocFile(String workDirectory, String cFileNameWithoutExtension){
+		File myObj = new File(workDirectory + cFileNameWithoutExtension + ".slice.loc");
+		List<Integer> lineNumbersOfSliceResult = new ArrayList<Integer>();
+		try {
+			Scanner myReader = new Scanner(myObj);
+			while (myReader.hasNextLine()) {
+				String temp = myReader.nextLine();
+		        Integer lineNumber = Integer.valueOf(temp);
+		        lineNumbersOfSliceResult.add(lineNumber);
+		      }
+			myReader.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return lineNumbersOfSliceResult;
 	}
 	
 }

@@ -2,7 +2,7 @@ import java.util.List;
 
 public class DynamicSliceResultDTO {
 	
-	private List<Integer> lineNumberOfDynamicSlice;
+	private int[] lineNumberOfDynamicSlice;
 	
 	private int lineNumberOfTargetToBeSliced;
 
@@ -14,11 +14,11 @@ public class DynamicSliceResultDTO {
 		this.lineNumberOfTargetToBeSliced = lineNumberOfTargetToBeSliced;
 	}
 
-	public List<Integer> getLineNumberOfDynamicSlice() {
+	public int[] getLineNumberOfDynamicSlice() {
 		return lineNumberOfDynamicSlice;
 	}
 
-	public void setLineNumberOfDynamicSlice(List<Integer> lineNumberOfDynamicSlice) {
+	public void setLineNumberOfDynamicSlice(int[] lineNumberOfDynamicSlice) {
 		this.lineNumberOfDynamicSlice = lineNumberOfDynamicSlice;
 	}
 	
