@@ -15,25 +15,16 @@ public class GiriImpl implements Giri{
 		Process process = null;
 		try {
 			 process = Runtime.getRuntime().exec(createGiriContainerCommand);
-			 wait20SecUntilThisProcessForCreatingContainerIsFinished(process);
+			 try {
+				process.waitFor();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-	}
-
-	private void wait20SecUntilThisProcessForCreatingContainerIsFinished(Process process) {
-		 ExecutingCommandThread thread = new ExecutingCommandThread(process);
-		 thread.start();
-		 try {
-			thread.join(20000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		if(thread.isAlive()) {
-			thread.interrupt();
-			throw new GiriContainerCreateFailedException(containerName);
-		}
 	}
 
 	public void copyMakeFileIntoContainer(String workDirectory, String workDirectoryInContainer) {
@@ -70,27 +61,18 @@ public class GiriImpl implements Giri{
 		String command = String.format("docker exec -i -w %s %s make", workDirectoryInContainer, this.containerName);
 		try {
 			process = Runtime.getRuntime().exec(command);
-			waitUntilProcessForMakeCommandIsFinished(process);
+			try {
+				process.waitFor();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 	}
 
-	private void waitUntilProcessForMakeCommandIsFinished(Process process) {
-		ExecutingCommandThread thread = new ExecutingCommandThread(process);
-		 thread.start();
-		 try {
-			thread.join(8000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		if(thread.isAlive()) {
-			thread.interrupt();
-			throw new GiriMakeCommandFailedException(containerName);
-		}
-		
-	}
 
 	public void downloadSlicLocFileIntoWorkDirectory(String workDirectoryInContainer, String workDirectory,String cFileNameWithoutExtension) {
 		String sliceLocFileName = cFileNameWithoutExtension + ".slice.loc";

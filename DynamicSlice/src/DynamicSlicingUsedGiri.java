@@ -81,10 +81,10 @@ public class DynamicSlicingUsedGiri implements DynamicSlicing{
 		
 		fileHandler.writePreprocessedCprogramFile(this.workDirectory, this.cPrgramDTO.getcFileName(), this.cPrgramDTO.getcProgramContentUsedArgvAsInput());
 		fileHandler.writeMakeFile(this.workDirectory,this.cPrgramDTO.getcFileNameWithoutExtension(), this.cPrgramDTO.generateInputDataInOneLine());
-		int[] lineNumberOfTargetStatement = this.cPrgramDTO.generateLineNumbersOfTargetStatement();
+		List<Integer> lineNumberOfTargetStatement = this.cPrgramDTO.getLineNumbersOfOutputStatement();
 		Giri giri = new GiriImpl();
 		giri.createContainer(containerName);
-		for(int lineNumberOfTarget:lineNumberOfTargetStatement) {
+		for(Integer lineNumberOfTarget:lineNumberOfTargetStatement) {
 			fileHandler.writeLocTxtFile(this.workDirectory,this.cPrgramDTO.getcFileName(),lineNumberOfTarget);
 			this.initializeWorkDirectoryInContainerName(lineNumberOfTarget);
 			giri.createWorkDirectoryInContainer(this.workDirectoryInContainer);

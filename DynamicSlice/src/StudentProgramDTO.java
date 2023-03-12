@@ -9,8 +9,6 @@ public class StudentProgramDTO {
 	
 	private String inputData;
 	
-	private int lineNumberOfTargetStatement;
-	
 	private String cProgramContent;
 
 	public int getQuetionID() {
@@ -43,14 +41,6 @@ public class StudentProgramDTO {
 
 	public void setInputData(String inputData) {
 		this.inputData = inputData;
-	}
-
-	public int getLineNumberOfTargetStatement() {
-		return lineNumberOfTargetStatement;
-	}
-
-	public void setLineNumberOfTargetStatement(int lineNumberOfTargetStatement) {
-		this.lineNumberOfTargetStatement = lineNumberOfTargetStatement;
 	}
 
 	public String getcProgramContent() {

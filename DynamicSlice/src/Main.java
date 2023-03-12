@@ -10,7 +10,6 @@ public class Main {
 		studentProgramDTO.setStudentID("110598067");
 		studentProgramDTO.setQuetionID(1);
 		studentProgramDTO.setInputData("2 1");
-		studentProgramDTO.setLineNumberOfTargetStatement(18);
 		studentProgramDTO.setcProgramContent("");
 		
 		CprogramAdapter programAdapter = new CprogramAdapterStub();
