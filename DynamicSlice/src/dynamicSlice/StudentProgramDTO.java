@@ -29,11 +29,10 @@ public class StudentProgramDTO {
 	}
 
 	public String getcFileName() {
+		if(this.cFileName == null) {
+			this.cFileName = this.studentID + "_" + this.quetionID + ".c";
+		}
 		return cFileName;
-	}
-
-	public void setcFileName(String cFileName) {
-		this.cFileName = cFileName;
 	}
 
 	public String getInputData() {
