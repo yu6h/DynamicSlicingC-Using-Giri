@@ -1,5 +1,6 @@
+import java.util.List;
 
-public class CprogramAdapterStub implements CprogramAdapter {
+public class CprogramAdapterStub implements CprogramConverter {
 	
 	
 	private StudentProgramDTO studentProgramDTO;
@@ -72,6 +73,18 @@ public class CprogramAdapterStub implements CprogramAdapter {
 		String programContent = this.removeComments(this.studentProgramDTO.getcProgramContent());
 		adaptedProgram.setcProgramContentUsedArgvAsInput(this.generateCprogramContentUsedArgvAsInput(programContent));
 		return adaptedProgram;
+	}
+
+	@Override
+	public void convert() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<Integer> convertChangedLineNumbersToOriginalLineNumbers(List<Integer> list) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

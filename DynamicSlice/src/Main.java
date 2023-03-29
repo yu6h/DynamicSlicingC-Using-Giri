@@ -12,15 +12,17 @@ public class Main {
 		studentProgramDTO.setInputData("2 1");
 		studentProgramDTO.setcProgramContent("");
 		
-		CprogramAdapter programAdapter = new CprogramAdapterStub();
-		programAdapter.setOriginalCProgramDTO(studentProgramDTO);
+		CprogramConverter converter = new CprogramConverterUseArgvAsInput(studentProgramDTO);
+
+		converter.convert();
 		
-		CprogramExpertUsedArgvAsInput formattedCProgramDTO = programAdapter.generateCprogramExpertUsedArgvAsInput();
+		CprogramExpertUsedArgvAsInput formattedCProgramDTO = converter.generateCprogramExpertUsedArgvAsInput();
 		
 		DynamicSliceUseCase dynamicSliceUseCase = new DynamicSliceUseCase();
 		
 		List<Integer> lineNumbersOfResult = dynamicSliceUseCase.execute(formattedCProgramDTO);
 		
+		lineNumbersOfResult = converter.convertChangedLineNumbersToOriginalLineNumbers(lineNumbersOfResult);
 		
 		for(Integer lineNumber:lineNumbersOfResult) {
 			System.out.println(lineNumber);

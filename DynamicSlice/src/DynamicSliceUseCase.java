@@ -3,12 +3,12 @@ import java.util.List;
 public class DynamicSliceUseCase {
 	
 	public List<Integer> execute(CprogramExpertUsedArgvAsInput studentProgramDTO) {
-		DynamicSlicing dynamicSlicing = new DynamicSlicingUsedGiri();
+		DynamicSlicing dynamicSliceservice = new GiriService();
 		
-		dynamicSlicing.setCProgramInfoUsedArgvAsInput(studentProgramDTO);
-		dynamicSlicing.execute();
+		dynamicSliceservice.setCProgramInfoUsedArgvAsInput(studentProgramDTO);
+		dynamicSliceservice.execute();
 		
-		List<Integer> result = dynamicSlicing.getDynamicResult();
+		List<Integer> result = dynamicSliceservice.getDynamicResult();
 
 		return result;		
 	}

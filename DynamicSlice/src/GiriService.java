@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 
-public class DynamicSlicingUsedGiri implements DynamicSlicing{
+public class GiriService implements DynamicSlicing{
 	
 	private String workDirectory;
 	
