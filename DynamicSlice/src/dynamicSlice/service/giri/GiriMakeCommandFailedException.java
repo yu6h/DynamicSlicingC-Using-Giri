@@ -1,4 +1,4 @@
-package dynamicSlice;
+package dynamicSlice.service.giri;
 
 public class GiriMakeCommandFailedException extends RuntimeException {
 	

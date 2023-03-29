@@ -1,4 +1,4 @@
-package dynamicSlice;
+package dynamicSlice.adapter.program;
 
 public class InsertedLines {
     private int lineNumbersWhereInserted;

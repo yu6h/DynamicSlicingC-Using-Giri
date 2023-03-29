@@ -1,5 +1,7 @@
-package dynamicSlice;
+package dynamicSlice.adapter.program;
 import java.util.List;
+
+import dynamicSlice.entity.CprogramExpertUsedArgvAsInput;
 
 public interface CprogramConverter {
 	

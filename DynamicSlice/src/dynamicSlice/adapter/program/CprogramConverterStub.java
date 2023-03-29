@@ -1,7 +1,10 @@
-package dynamicSlice;
+package dynamicSlice.adapter.program;
 import java.util.List;
 
-public class CprogramAdapterStub implements CprogramConverter {
+import dynamicSlice.StudentProgramDTO;
+import dynamicSlice.entity.CprogramExpertUsedArgvAsInput;
+
+public class CprogramConverterStub implements CprogramConverter {
 	
 	
 	private StudentProgramDTO studentProgramDTO;

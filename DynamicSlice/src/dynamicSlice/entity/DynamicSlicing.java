@@ -1,4 +1,4 @@
-package dynamicSlice;
+package dynamicSlice.entity;
 import java.util.List;
 
 public interface DynamicSlicing {

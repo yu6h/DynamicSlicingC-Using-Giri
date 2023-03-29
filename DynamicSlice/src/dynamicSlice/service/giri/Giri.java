@@ -1,4 +1,4 @@
-package dynamicSlice;
+package dynamicSlice.service.giri;
 
 public interface Giri {
 	

@@ -1,5 +1,9 @@
-package dynamicSlice;
+package dynamicSlice.usecase;
 import java.util.List;
+
+import dynamicSlice.entity.CprogramExpertUsedArgvAsInput;
+import dynamicSlice.entity.DynamicSlicing;
+import dynamicSlice.service.giri.GiriService;
 
 public class DynamicSliceUseCase {
 	

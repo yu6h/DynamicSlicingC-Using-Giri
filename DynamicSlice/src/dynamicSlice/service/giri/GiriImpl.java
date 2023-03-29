@@ -1,14 +1,9 @@
-package dynamicSlice;
+package dynamicSlice.service.giri;
 import java.io.IOException;
 
 public class GiriImpl implements Giri{
 	
 	private String containerName;
-	
-	public static void main(String[] args) {
-		Giri giri = new GiriImpl();
-		giri.createContainer("110598067_1");
-	}
 
 	public void createContainer(String containerName) {
 		this.containerName = containerName;
