@@ -5,6 +5,5 @@ public interface CprogramAdapter {
 
 	public CprogramExpertUsedArgvAsInput generateCprogramExpertUsedArgvAsInput();
 	
-	public int getNumbersOfDummyLines();
 
 }

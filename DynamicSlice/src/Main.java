@@ -21,9 +21,6 @@ public class Main {
 		
 		List<Integer> lineNumbersOfResult = dynamicSliceUseCase.execute(formattedCProgramDTO);
 		
-		DynamicResultAdapter resultAdapter = new DynamicResultAdapter();
-		
-		lineNumbersOfResult = resultAdapter.adapteToResultUsedScanfAsInput(lineNumbersOfResult, programAdapter.getNumbersOfDummyLines());
 		
 		for(Integer lineNumber:lineNumbersOfResult) {
 			System.out.println(lineNumber);

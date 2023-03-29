@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class CprogramExpertUsedArgvAsInput {
 
@@ -10,7 +11,7 @@ public class CprogramExpertUsedArgvAsInput {
 	private int quetionID;
 	private String studentID;
 	private String inputData;
-	private String cProgramContentUsedArgvAsInput;
+	private String programContent;
 	private List<Integer> lineNumbersOfOutput;
 
 	public String getcFileName() {
@@ -46,11 +47,11 @@ public class CprogramExpertUsedArgvAsInput {
 	}
 
 	public String getcProgramContentUsedArgvAsInput() {
-		return cProgramContentUsedArgvAsInput;
+		return this.programContent;
 	}
 
 	public void setcProgramContentUsedArgvAsInput(String cProgramContentUsedArgvAsInput) {
-		this.cProgramContentUsedArgvAsInput = cProgramContentUsedArgvAsInput;
+		this.programContent = cProgramContentUsedArgvAsInput;
 	}
 	
 	public String getcFileNameWithoutExtension() {
@@ -67,49 +68,67 @@ public class CprogramExpertUsedArgvAsInput {
 	    return str.replace("\n", " "); // count total line endings
 	}
 	
-	public List<Integer> getLineNumbersOfOutputStatement() {
-        if(this.lineNumbersOfOutput == null) {
-        	this.lineNumbersOfOutput = new ArrayList<Integer>();
-        	String[] arr = this.cProgramContentUsedArgvAsInput.split("\n");
-            for(int i=0;i<arr.length;i++){
+	public List<Integer> getLineNumbersOfArgumentInOutputStatement() {
+		if(this.lineNumbersOfOutput==null) {
+	        List<Integer> startIndexes = this.getStartIndexesOfOutputFunctionStatement();
+	        lineNumbersOfOutput = new ArrayList<Integer>();
+	        for(Integer index:startIndexes){
+	            boolean isFind = false;
+	            int brackets = 0;
+	            int indexOfFgets =index;
+	            int left = -1;
+	            int right = 0;
+	            while (!isFind){
+	                if(this.programContent.charAt(indexOfFgets)=='('){
+	                    brackets++;
+	                    if(left == -1)left = indexOfFgets;
+	                }else if(this.programContent.charAt(indexOfFgets)==')'){
+	                    brackets--;
+	                    if(brackets==0){
+	                        right =indexOfFgets;
+	                        isFind = true;
+	                    }
+	                }
+	                indexOfFgets++;
+	            }
+	            int indexOfNextNewline = this.programContent.indexOf('\n',left+1);
+	            int lineNumberAfterLeftBracket = countLineNumberInProgram(left+1);
+	            if(indexOfNextNewline>right){
+	                lineNumbersOfOutput.add(lineNumberAfterLeftBracket);
+	            }else {
+	                String stringInBrackets = this.programContent.substring(left+1,right);
+	                String arr[] = stringInBrackets.split("\n");
+	                for(int i =0;i<arr.length;i++){
+	                    if(hasMatch(arr[i],"\\w")){
+	                        lineNumbersOfOutput.add(lineNumberAfterLeftBracket+i);
+	                    }
+	                }
+	            }
+	        }
+		}
 
-                if(checkIfOutputFunctionNameExistInStatement(arr[i])){
-                    boolean isAOutputStatement = checkIfThereIsAnyOutputFunctionOutsideOfDoubleQuotes(arr[i]);
-                    if(isAOutputStatement){
-                        this.lineNumbersOfOutput.add(i+1);
-                    }
-
-                }
-            }
-        }
-		return this.lineNumbersOfOutput;
+        return this.lineNumbersOfOutput;
 	}
-
-    private boolean checkIfThereIsAnyOutputFunctionOutsideOfDoubleQuotes(String statement) {
-        List<Integer> indexesOfDoubleQuote = getStartIndexOfDoubleQuote(statement);
-        List<Integer> startIndexesOfOutputFunction = getStartIndexesOfPrintfOrPutsOrPutcharFunction(statement);
-        int length = statement.length();
-        boolean isIndexInsideDoubleQuotes = false;
-        boolean doesAnyOutputStatementExist = false;
-        for(int index =0;index<length;index++){
-            if(indexesOfDoubleQuote.contains(index))isIndexInsideDoubleQuotes = !isIndexInsideDoubleQuotes;
-            else if (!isIndexInsideDoubleQuotes && startIndexesOfOutputFunction.contains(index) ) {
-                doesAnyOutputStatementExist = true;
-                break;
-            }
-        }
-        return  doesAnyOutputStatementExist;
+	
+	private int countLineNumberInProgram(int indexInProgram) {
+        String str = this.programContent.substring(0,indexInProgram);
+        int lineNumber = this.countNewLines(str) + 1;
+        return lineNumber;
     }
-
-    private List<Integer> getStartIndexOfDoubleQuote(String statement) {
-        return getStartIndex(statement,"(?<!\\\\)\"");
-	}
-
-	private List<Integer> getStartIndexesOfPrintfOrPutsOrPutcharFunction(String statement){
-        return getStartIndex(statement,"[\\s]*(?<!\\w)(?:printf|puts|putchar)[\\s]*\\(");
+    public int countNewLines(String str){
+        return countMatches(str, "\n");
     }
-    
-    private List<Integer> getStartIndex(String statement, String regex){
+	private boolean hasMatch(String str,String regex){
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(str);
+        return matcher.find();
+    }
+    private List<Integer> getStartIndexesOfOutputFunctionStatement(){
+        List<Integer> startIndexes = getStartIndexes(this.programContent,"[\\s]*(?<!\\w)(?:printf|puts|putc|putchar|fputs)[\\s]*\\(");
+        List<Integer> result = startIndexes.stream().filter(x-> !isInsideStringDoubleQuotes(x)).collect(Collectors.toList());
+        return result;
+    }
+    private List<Integer> getStartIndexes(String statement, String regex){
         List<Integer> result = new ArrayList<Integer>();
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(statement);
@@ -118,16 +137,27 @@ public class CprogramExpertUsedArgvAsInput {
         }
         return result;
     }
-
-	private boolean checkIfOutputFunctionNameExistInStatement(String statement){
-        return checkIfRegexExistInStatement(statement,"[\\s]*(?<!\\w)(?:printf|puts|putchar)[\\s]*\\(");
+    private boolean isInsideStringDoubleQuotes(int indexAtProgram){
+        boolean isInside;
+        if(this.programContent.charAt(indexAtProgram) =='\"'){
+            isInside = true;
+        }else {
+            String substr = this.programContent.substring(indexAtProgram);
+            String line = substr.substring(0,substr.indexOf('\n'));
+            int numbersOfDoubleQuote = countMatches(line,"(?<!\\\\)\"");
+            isInside = (numbersOfDoubleQuote%2 != 0);
+        }
+        return isInside;
     }
-
-    private boolean checkIfRegexExistInStatement(String statement, String regex){
+    
+    private int countMatches(String statement,String regex){
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(statement);
-        boolean isExist = matcher.find();
-        return isExist;
+        int count = 0;
+        while (matcher.find()) {
+            count++;
+        }
+        return count;
     }
 
 }

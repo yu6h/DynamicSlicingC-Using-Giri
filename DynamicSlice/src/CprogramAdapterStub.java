@@ -73,12 +73,5 @@ public class CprogramAdapterStub implements CprogramAdapter {
 		adaptedProgram.setcProgramContentUsedArgvAsInput(this.generateCprogramContentUsedArgvAsInput(programContent));
 		return adaptedProgram;
 	}
-	
-	
-
-
-	public int getNumbersOfDummyLines() {
-		return 2;
-	}
 
 }
