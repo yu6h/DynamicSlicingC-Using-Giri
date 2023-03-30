@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import dynamicSlice.StudentProgramDTO;
+import dynamicSlice.DTO.StudentProgramDTO;
 import dynamicSlice.entity.CprogramExpertUsedArgvAsInput;
 
 public class CprogramConverterUseArgvAsInput implements CprogramConverter {

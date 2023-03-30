@@ -1,4 +1,4 @@
-package dynamicSlice;
+package dynamicSlice.DTO;
 
 public class StudentProgramDTO {
 	
