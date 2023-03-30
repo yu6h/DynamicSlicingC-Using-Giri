@@ -2,9 +2,11 @@ package dynamicSlice.usecase.in;
 
 public interface Giri {
 	
-	public void createContainer(String containerName);
+	public void setContainerName(String containerName);
 	
-	public void createWorkDirectoryInContainer(String workDirectoryInContainer); 
+	public void createWorkDirectoryInContainer(String workDirectoryInContainer);
+	
+	public void deleteWorkDirectoryInContainer(String workDirectoryInContainer);
 
 	public void copyMakeFileIntoContainer(String workDirectory, String workDirectoryInContainer); 
 	
@@ -16,7 +18,4 @@ public interface Giri {
 
 	public void downloadSlicLocFileIntoWorkDirectory(String workDirectoryInContainer, String workDirectory,String cFileNameWithoutExtension);
 	
-	public void stopContainer(String containerName);
-	
-	public void removeContainer(String containerName);
 }

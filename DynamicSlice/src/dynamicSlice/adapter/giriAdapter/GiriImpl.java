@@ -6,23 +6,9 @@ import dynamicSlice.usecase.in.Giri;
 public class GiriImpl implements Giri{
 	
 	private String containerName;
-
-	public void createContainer(String containerName) {
+	
+	public void setContainerName(String containerName) {
 		this.containerName = containerName;
-		String createGiriContainerCommand = String.format("docker run --name %s -d -i liuml07/giri /bin/bash", containerName);
-		Process process = null;
-		try {
-			 process = Runtime.getRuntime().exec(createGiriContainerCommand);
-			 try {
-				process.waitFor();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
 	}
 
 	public void copyMakeFileIntoContainer(String workDirectory, String workDirectoryInContainer) {
@@ -92,7 +78,13 @@ public class GiriImpl implements Giri{
 		}
 		
 	}
-
+	public static void main(String[] args) {
+		GiriImpl giri = new GiriImpl();
+		String dir = "/giri/test/UnitTests/ST";
+		giri.setContainerName("giriContainer");
+//		giri.createWorkDirectoryInContainer(dir);
+		giri.deleteWorkDirectoryInContainer(dir);
+	}
 	public void createWorkDirectoryInContainer(String workDirectoryInContainer) {
 		Process process = null;
 		String command = String.format("docker exec -i %s mkdir %s", containerName, workDirectoryInContainer);
@@ -108,9 +100,10 @@ public class GiriImpl implements Giri{
 		}
 	}
 
-	public void stopContainer(String containerName) {
+	@Override
+	public void deleteWorkDirectoryInContainer(String workDirectoryInContainer) {
 		Process process = null;
-		String command = String.format("docker stop %s", containerName);
+		String command = String.format("docker exec -i %s rm -r %s", containerName, workDirectoryInContainer);
 		try {
 			 process = Runtime.getRuntime().exec(command);
 			 try {
@@ -121,22 +114,7 @@ public class GiriImpl implements Giri{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 	}
-
-	public void removeContainer(String containerName) {
-		Process process = null;
-		String command = String.format("docker rm %s", containerName);
-		try {
-			 process = Runtime.getRuntime().exec(command);
-			 try {
-				process.waitFor();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 
 }

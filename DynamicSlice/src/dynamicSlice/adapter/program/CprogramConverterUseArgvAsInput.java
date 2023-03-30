@@ -171,10 +171,10 @@ public class CprogramConverterUseArgvAsInput implements CprogramConverter {
 
         StringBuilder stringBuilder = new StringBuilder(this.programContent);
         if( statementExistInMainInTheSameLine){
-            stringBuilder.insert(indexToInsert,"\nINPUT110598067=argv[1];convertNewLine(INPUT110598067);convertSpace(INPUT110598067);\n");
+            stringBuilder.insert(indexToInsert,"\nINPUT110598067=argv[1];convertNewLine110598067(INPUT110598067);convertSpace110598067(INPUT110598067);\n");
             this.recordInsertedNewLinesInStack(lineNumber+1,2);
         }else {
-            stringBuilder.insert(indexToInsert,"\nINPUT110598067=argv[1];convertNewLine(INPUT110598067);convertSpace(INPUT110598067);");
+            stringBuilder.insert(indexToInsert,"\nINPUT110598067=argv[1];convertNewLine110598067(INPUT110598067);convertSpace110598067(INPUT110598067);");
             this.recordInsertedNewLinesInStack(lineNumber+1,1);
         }
         this.programContent = stringBuilder.toString();

@@ -18,15 +18,7 @@ public class GiriDynamciSliceService implements DynamicSlicingUseCase{
 	
 	private String workDirectory;
 	
-	private String studentID;
-	
-	private String questiotnID;
-	
-	private String cFileName;
-	
 	private String containerName;
-	
-	private String inputData;
 	
 	private String workDirectoryInContainer;
 
@@ -41,44 +33,12 @@ public class GiriDynamciSliceService implements DynamicSlicingUseCase{
 	public GiriDynamciSliceService(FileRepository fileHandler,Giri giri) {
 		this.fileHandler = fileHandler;
 		this.giri = giri;
+		this.setContainerName("giriContainer");
+		giri.setContainerName(this.containerName);
 	}
-	
-	public String getInputData() {
-		return inputData;
-	}
-
-	public void setInputData(String inputData) {
-		this.inputData = inputData;
-	}
-
-
 
 	public String getWorkDirectory() {
 		return workDirectory;
-	}
-
-	public String getStudentID() {
-		return studentID;
-	}
-
-	public void setStudentID(String studentID) {
-		this.studentID = studentID;
-	}
-
-	public String getQuestiotnID() {
-		return questiotnID;
-	}
-
-	public void setQuestiotnID(String questiotnID) {
-		this.questiotnID = questiotnID;
-	}
-
-	public String getcFileName() {
-		return cFileName;
-	}
-
-	public void setcFileName(String cFileName) {
-		this.cFileName = cFileName;
 	}
 
 	public String getWorkDirectoryInContainer() {
@@ -89,9 +49,9 @@ public class GiriDynamciSliceService implements DynamicSlicingUseCase{
 		this.setCProgramInfoUsedArgvAsInput(cPrgramDTO);
 		TreeSet<Integer> lineNumbersSet = new TreeSet<Integer>();
 
-		this.initializeContainerName();
-		this.initializeWorkDirectory();
 		
+		this.initializeWorkDirectory();
+		this.initializeWorkDirectoryInContainerName();
 		fileHandler.deleteWorkDirectory(new File(this.workDirectory));
 		fileHandler.createWorkDirectory(new File(this.workDirectory));
 		
@@ -99,10 +59,10 @@ public class GiriDynamciSliceService implements DynamicSlicingUseCase{
 		fileHandler.writeMakeFile(this.workDirectory,this.cPrgramDTO.getcFileNameWithoutExtension(), this.cPrgramDTO.generateInputDataInOneLine());
 		List<Integer> lineNumberOfTargetStatement = this.cPrgramDTO.getLineNumbersOfArgumentInOutputStatement();
 
-		giri.createContainer(containerName);
 		for(Integer lineNumberOfTarget:lineNumberOfTargetStatement) {
 			fileHandler.writeLocTxtFile(this.workDirectory,this.cPrgramDTO.getcFileName(),lineNumberOfTarget);
-			this.initializeWorkDirectoryInContainerName(lineNumberOfTarget);
+
+			giri.deleteWorkDirectoryInContainer(this.workDirectoryInContainer);
 			giri.createWorkDirectoryInContainer(this.workDirectoryInContainer);
 			giri.copyMakeFileIntoContainer(this.workDirectory, this.workDirectoryInContainer);
 			giri.copyLotTxtFileIntoContainer( this.workDirectory, this.workDirectoryInContainer);
@@ -113,24 +73,22 @@ public class GiriDynamciSliceService implements DynamicSlicingUseCase{
 			lineNumbersSet.addAll(lineNumbersOfDynamicSlice);
 			
 		}
-		giri.stopContainer(containerName);
-		giri.removeContainer(containerName);
+
+		fileHandler.deleteWorkDirectory(new File(this.workDirectory));
 		this.linNumbersOfSliceResults = new ArrayList<Integer>(lineNumbersSet);
 		return this.linNumbersOfSliceResults;
 	}
 	
-	
-
-	private void initializeContainerName() {
-		this.containerName = this.cPrgramDTO.getStudentID() + "_" + this.cPrgramDTO.getQuetionID();
+	private void setContainerName(String containerName) {
+		this.containerName = containerName;
 	}
 
-	private void initializeWorkDirectoryInContainerName(int lineNumberOfTarget) {
-		this.workDirectoryInContainer = "/giri/test/UnitTests/HWbyTarget" +lineNumberOfTarget+"/";		
+	private void initializeWorkDirectoryInContainerName() {
+		this.workDirectoryInContainer = "/giri/test/UnitTests/ST"+this.cPrgramDTO.getStudentID()+"HW"+ this.cPrgramDTO.getQuetionID() +"/";		
 	}
 
 	private void initializeWorkDirectory() {
-		this.workDirectory = "/home/aaron/Desktop/GiriWorkDirectory/"+this.cPrgramDTO.getStudentID()+"/"
+		this.workDirectory = "/home/aaron/Desktop/GiriWorkDirectory/"+ this.cPrgramDTO.getStudentID()+"/"
 				+ this.cPrgramDTO.getQuetionID() + "/";
 	}
 
