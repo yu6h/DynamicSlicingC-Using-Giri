@@ -1,4 +1,4 @@
-package dynamicSlice.service.giri;
+package dynamicSlice.usecase.in;
 
 public interface Giri {
 	

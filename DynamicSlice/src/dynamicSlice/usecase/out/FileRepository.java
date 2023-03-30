@@ -1,8 +1,8 @@
-package dynamicSlice.service;
+package dynamicSlice.usecase.out;
 import java.io.File;
 import java.util.List;
 
-public interface FileHandler {
+public interface FileRepository {
 	public boolean deleteWorkDirectory(File directoryToBeDeleted);
 	public void createWorkDirectory(File file);
 	public void writePreprocessedCprogramFile(String workDirectory, String cFileName, String preprocessedprogramContent);

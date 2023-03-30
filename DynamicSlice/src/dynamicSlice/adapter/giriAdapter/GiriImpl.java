@@ -1,5 +1,7 @@
-package dynamicSlice.service.giri;
+package dynamicSlice.adapter.giriAdapter;
 import java.io.IOException;
+
+import dynamicSlice.usecase.in.Giri;
 
 public class GiriImpl implements Giri{
 	

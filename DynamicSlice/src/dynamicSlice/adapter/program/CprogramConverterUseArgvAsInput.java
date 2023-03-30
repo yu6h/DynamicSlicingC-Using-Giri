@@ -111,9 +111,13 @@ public class CprogramConverterUseArgvAsInput implements CprogramConverter {
 		adaptedProgram.setcFileName(this.studentProgramDTO.getcFileName());
 		adaptedProgram.setQuetionID(this.studentProgramDTO.getQuetionID());
 		adaptedProgram.setStudentID(this.studentProgramDTO.getStudentID());
-		adaptedProgram.setInputData(this.studentProgramDTO.getInputData());
+		adaptedProgram.setInputData(this.convertInputDataInOneLine(this.studentProgramDTO.getInputData()));
 		adaptedProgram.setcProgramContentUsedArgvAsInput(this.programContent);
 		return adaptedProgram;
+	}
+
+	private String convertInputDataInOneLine(String inputData) {
+		return inputData.replaceAll(" ","nbsp;").replaceAll("\n","brnl;");
 	}
 
 	public void convert(){

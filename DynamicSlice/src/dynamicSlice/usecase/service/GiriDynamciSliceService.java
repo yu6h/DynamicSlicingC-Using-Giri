@@ -1,4 +1,4 @@
-package dynamicSlice.service.giri;
+package dynamicSlice.usecase.service;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 
+import dynamicSlice.adapter.fileHandler.FileRepositoryImpl;
+import dynamicSlice.adapter.giriAdapter.GiriImpl;
 import dynamicSlice.entity.CprogramExpertUsedArgvAsInput;
-import dynamicSlice.entity.DynamicSlicing;
-import dynamicSlice.service.FileHandler;
-import dynamicSlice.service.FileHandlerImpl;
+import dynamicSlice.usecase.in.DynamicSlicingUseCase;
+import dynamicSlice.usecase.in.Giri;
+import dynamicSlice.usecase.out.FileRepository;
 
-public class GiriService implements DynamicSlicing{
+public class GiriDynamciSliceService implements DynamicSlicingUseCase{
 	
 	private String workDirectory;
 	
@@ -31,6 +33,15 @@ public class GiriService implements DynamicSlicing{
 	private CprogramExpertUsedArgvAsInput cPrgramDTO;
 
 	private List<Integer> linNumbersOfSliceResults;
+
+	private FileRepository fileHandler;
+
+	private Giri giri;
+	
+	public GiriDynamciSliceService(FileRepository fileHandler,Giri giri) {
+		this.fileHandler = fileHandler;
+		this.giri = giri;
+	}
 	
 	public String getInputData() {
 		return inputData;
@@ -74,10 +85,9 @@ public class GiriService implements DynamicSlicing{
 		return workDirectoryInContainer;
 	}
 	
-	public void execute(){
+	public List<Integer> execute(CprogramExpertUsedArgvAsInput cPrgramDTO){
+		this.setCProgramInfoUsedArgvAsInput(cPrgramDTO);
 		TreeSet<Integer> lineNumbersSet = new TreeSet<Integer>();
-		
-		FileHandler fileHandler = new FileHandlerImpl();
 
 		this.initializeContainerName();
 		this.initializeWorkDirectory();
@@ -88,7 +98,7 @@ public class GiriService implements DynamicSlicing{
 		fileHandler.writePreprocessedCprogramFile(this.workDirectory, this.cPrgramDTO.getcFileName(), this.cPrgramDTO.getcProgramContentUsedArgvAsInput());
 		fileHandler.writeMakeFile(this.workDirectory,this.cPrgramDTO.getcFileNameWithoutExtension(), this.cPrgramDTO.generateInputDataInOneLine());
 		List<Integer> lineNumberOfTargetStatement = this.cPrgramDTO.getLineNumbersOfArgumentInOutputStatement();
-		Giri giri = new GiriImpl();
+
 		giri.createContainer(containerName);
 		for(Integer lineNumberOfTarget:lineNumberOfTargetStatement) {
 			fileHandler.writeLocTxtFile(this.workDirectory,this.cPrgramDTO.getcFileName(),lineNumberOfTarget);
@@ -106,6 +116,7 @@ public class GiriService implements DynamicSlicing{
 		giri.stopContainer(containerName);
 		giri.removeContainer(containerName);
 		this.linNumbersOfSliceResults = new ArrayList<Integer>(lineNumbersSet);
+		return this.linNumbersOfSliceResults;
 	}
 	
 	
@@ -123,7 +134,7 @@ public class GiriService implements DynamicSlicing{
 				+ this.cPrgramDTO.getQuetionID() + "/";
 	}
 
-	public void setCProgramInfoUsedArgvAsInput(CprogramExpertUsedArgvAsInput cPrgramDTO) {
+	private void setCProgramInfoUsedArgvAsInput(CprogramExpertUsedArgvAsInput cPrgramDTO) {
 		this.cPrgramDTO = cPrgramDTO;
 	}
 

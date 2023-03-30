@@ -1,10 +1,13 @@
 package dynamicSlice;
 import java.util.List;
 
+import dynamicSlice.adapter.fileHandler.FileRepositoryImpl;
+import dynamicSlice.adapter.giriAdapter.GiriImpl;
 import dynamicSlice.adapter.program.CprogramConverter;
 import dynamicSlice.adapter.program.CprogramConverterUseArgvAsInput;
 import dynamicSlice.entity.CprogramExpertUsedArgvAsInput;
-import dynamicSlice.usecase.DynamicSliceUseCase;
+import dynamicSlice.usecase.in.DynamicSlicingUseCase;
+import dynamicSlice.usecase.service.GiriDynamciSliceService;
 
 public class Main {
 
@@ -23,9 +26,9 @@ public class Main {
 		
 		CprogramExpertUsedArgvAsInput formattedCProgramDTO = converter.generateCprogramExpertUsedArgvAsInput();
 		
-		DynamicSliceUseCase dynamicSliceUseCase = new DynamicSliceUseCase();
-		
-		List<Integer> lineNumbersOfResult = dynamicSliceUseCase.execute(formattedCProgramDTO);
+
+		DynamicSlicingUseCase dynamicSliceservice = new GiriDynamciSliceService(new FileRepositoryImpl(),new GiriImpl());
+		List<Integer> lineNumbersOfResult = dynamicSliceservice.execute(formattedCProgramDTO);
 		
 		lineNumbersOfResult = converter.convertChangedLineNumbersToOriginalLineNumbers(lineNumbersOfResult);
 		
