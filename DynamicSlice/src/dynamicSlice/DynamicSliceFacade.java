@@ -29,11 +29,11 @@ public class DynamicSliceFacade {
 	}
 	
 	public void setInputData(String inputData) {
-		this.setInputData(inputData);
+		this.studentProgramDTO.setInputData(inputData);
 	}
 	
 	public void setcProgramContent(String programContent) {
-		this.setcProgramContent(programContent);
+		this.studentProgramDTO.setcProgramContent(programContent);
 	}
 	
 	public List<Integer> execute() {

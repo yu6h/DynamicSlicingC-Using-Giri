@@ -62,13 +62,6 @@ public class CprogramExpertUsedArgvAsInput {
 		return this.cFileNameWithoutExtension;
 	}
 	
-	
-	public String generateInputDataInOneLine() {
-	    String str = this.inputData.replace("\r\n", "\n"); // convert windows line endings to linux format 
-	    str = str.replace("\r", "\n"); // convert (remaining) mac line endings to linux format
-	    return str.replace("\n", " "); // count total line endings
-	}
-	
 	public List<Integer> getLineNumbersOfArgumentInOutputStatement() {
 		if(this.lineNumbersOfOutput==null) {
 	        List<Integer> startIndexes = this.getStartIndexesOfOutputFunctionStatement();
