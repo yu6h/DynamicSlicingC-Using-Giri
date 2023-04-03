@@ -14,46 +14,28 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		
-		StudentProgramDTO studentProgramDTO = new StudentProgramDTO();
-		studentProgramDTO.setStudentID("110598067");
-		studentProgramDTO.setQuetionID(1);
-		studentProgramDTO.setInputData("2 1\n");
-		studentProgramDTO.setcProgramContent("#include<stdio.h>\n" + 
+		DynamicSliceFacade dynamciSlice = new DynamicSliceFacade();
+		dynamciSlice.setStudentID("110598067");
+		dynamciSlice.setQuetionID(1);
+		dynamciSlice.setInputData("0 0\n");
+		dynamciSlice.setcProgramContent("#include<stdio.h>\n" + 
 				"#include<stdlib.h>\n" + 
 				"int main(){\n" + 
-				"    int n,a,i,s;\n" + 
-				"    scanf(\"%d\",&n);\n" + 
-				"    scanf(\"%d\",&a);\n" + 
+				"    int a,b,i,s;\n" + 
+				"    scanf(\"%d %d\",&a,&b);\n" + 
 				"    i = 1; \n" + 
 				"    s = 1; \n" + 
-				"    if (a > 0) \n" + 
-				"        s = 0; \n" + 
-				"    while (i<=n){ \n" + 
-				"        if(a>0){ \n" + 
-				"            s+=2;\n" + 
-				"            a-=1; \n" + 
-				"        }else \n" + 
-				"            s*=2; \n" + 
-				"        i++;\n" + 
-				"    }\n" + 
-				"    printf(\"%d\\n\",s);\n" + 
+				"    if(a>0 && b>0){ \n" + 
+				"            s+=5;//s+=2;\n" + 
+				"            a-=3;//a-=1; \n" + 
+				"    }else \n" + 
+				"            s*=4;//s*=2; \n" + 
+				"    printf(\n" + 
+				"        \"%d\\n\",s);\n" + 
 				"    printf(\"%d\\n\",a);\n" + 
 				"    return 0;\n" + 
 				"}\n");
-		
-		CprogramConverter converter = new CprogramConverterUseArgvAsInput(studentProgramDTO);
-
-		converter.convert();
-		
-		CprogramExpertUsedArgvAsInput formattedCProgramDTO = converter.generateCprogramExpertUsedArgvAsInput();
-		
-
-		DynamicSlicingUseCase dynamicSliceservice = new GiriDynamciSliceService(new FileRepositoryImpl(),new GiriImpl());
-		List<Integer> lineNumbersOfResult = dynamicSliceservice.execute(formattedCProgramDTO);
-		
-		lineNumbersOfResult = converter.convertChangedLineNumbersToOriginalLineNumbers(lineNumbersOfResult);
-		
+		List<Integer> lineNumbersOfResult = dynamciSlice.execute();
 		for(Integer lineNumber:lineNumbersOfResult) {
 			System.out.println(lineNumber);
 		}

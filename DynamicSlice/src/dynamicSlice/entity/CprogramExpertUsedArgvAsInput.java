@@ -62,66 +62,22 @@ public class CprogramExpertUsedArgvAsInput {
 		return this.cFileNameWithoutExtension;
 	}
 	
-	public List<Integer> getLineNumbersOfArgumentInOutputStatement() {
-		if(this.lineNumbersOfOutput==null) {
-	        List<Integer> startIndexes = this.getStartIndexesOfOutputFunctionStatement();
-	        lineNumbersOfOutput = new ArrayList<Integer>();
-	        for(Integer index:startIndexes){
-	            boolean isFind = false;
-	            int brackets = 0;
-	            int indexOfFgets =index;
-	            int left = -1;
-	            int right = 0;
-	            while (!isFind){
-	                if(this.programContent.charAt(indexOfFgets)=='('){
-	                    brackets++;
-	                    if(left == -1)left = indexOfFgets;
-	                }else if(this.programContent.charAt(indexOfFgets)==')'){
-	                    brackets--;
-	                    if(brackets==0){
-	                        right =indexOfFgets;
-	                        isFind = true;
-	                    }
-	                }
-	                indexOfFgets++;
-	            }
-	            int indexOfNextNewline = this.programContent.indexOf('\n',left+1);
-	            int lineNumberAfterLeftBracket = countLineNumberInProgram(left+1);
-	            if(indexOfNextNewline>right){
-	                lineNumbersOfOutput.add(lineNumberAfterLeftBracket);
-	            }else {
-	                String stringInBrackets = this.programContent.substring(left+1,right);
-	                String arr[] = stringInBrackets.split("\n");
-	                for(int i =0;i<arr.length;i++){
-	                    if(hasMatch(arr[i],"\\w")){
-	                        lineNumbersOfOutput.add(lineNumberAfterLeftBracket+i);
-	                    }
-	                }
-	            }
-	        }
-		}
-
-        return this.lineNumbersOfOutput;
-	}
+    public List<Integer> getLineNumbersOfOutputStatement() {
+        List<Integer> startIndexes = getStartIndexes(this.programContent,"(?<!\\w)(?:printf|puts|putc|putchar|fputs)[\\s]*\\(");
+        List<Integer> result = startIndexes.stream().filter(x-> !isInsideStringDoubleQuotes(x)).map(x->countLineNumberInProgram(x)).collect(Collectors.toList());
+        return result;
+    }
 	
 	private int countLineNumberInProgram(int indexInProgram) {
         String str = this.programContent.substring(0,indexInProgram);
         int lineNumber = this.countNewLines(str) + 1;
         return lineNumber;
     }
+	
     public int countNewLines(String str){
         return countMatches(str, "\n");
     }
-	private boolean hasMatch(String str,String regex){
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(str);
-        return matcher.find();
-    }
-    private List<Integer> getStartIndexesOfOutputFunctionStatement(){
-        List<Integer> startIndexes = getStartIndexes(this.programContent,"[\\s]*(?<!\\w)(?:printf|puts|putc|putchar|fputs)[\\s]*\\(");
-        List<Integer> result = startIndexes.stream().filter(x-> !isInsideStringDoubleQuotes(x)).collect(Collectors.toList());
-        return result;
-    }
+
     private List<Integer> getStartIndexes(String statement, String regex){
         List<Integer> result = new ArrayList<Integer>();
         Pattern pattern = Pattern.compile(regex);

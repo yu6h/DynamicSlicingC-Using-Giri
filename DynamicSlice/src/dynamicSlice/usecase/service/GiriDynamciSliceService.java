@@ -57,7 +57,7 @@ public class GiriDynamciSliceService implements DynamicSlicingUseCase{
 		
 		fileHandler.writePreprocessedCprogramFile(this.workDirectory, this.cPrgramDTO.getcFileName(), this.cPrgramDTO.getcProgramContentUsedArgvAsInput());
 		fileHandler.writeMakeFile(this.workDirectory,this.cPrgramDTO.getcFileNameWithoutExtension(), this.cPrgramDTO.getInputData());
-		List<Integer> lineNumberOfTargetStatement = this.cPrgramDTO.getLineNumbersOfArgumentInOutputStatement();
+		List<Integer> lineNumberOfTargetStatement = this.cPrgramDTO.getLineNumbersOfOutputStatement();
 
 		for(Integer lineNumberOfTarget:lineNumberOfTargetStatement) {
 			fileHandler.writeLocTxtFile(this.workDirectory,this.cPrgramDTO.getcFileName(),lineNumberOfTarget);
