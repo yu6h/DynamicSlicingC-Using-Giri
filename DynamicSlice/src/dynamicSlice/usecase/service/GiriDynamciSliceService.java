@@ -69,9 +69,11 @@ public class GiriDynamciSliceService implements DynamicSlicingUseCase{
 			giri.copyCProgramFileIntoContainer(this.workDirectory, this.workDirectoryInContainer, this.cPrgramDTO.getcFileName());
 			giri.make(this.workDirectoryInContainer);
 			giri.downloadSlicLocFileIntoWorkDirectory(this.workDirectoryInContainer, this.workDirectory, this.cPrgramDTO.getcFileNameWithoutExtension());
-			List<Integer> lineNumbersOfDynamicSlice = fileHandler.readSliceLocFile(this.workDirectory, this.cPrgramDTO.getcFileNameWithoutExtension());
-			lineNumbersSet.addAll(lineNumbersOfDynamicSlice);
-			
+			boolean doesSliceLocFileExist = fileHandler.checkIfSliceLocFileExist(this.workDirectory , this.cPrgramDTO.getcFileNameWithoutExtension());
+			if (doesSliceLocFileExist) {
+				List<Integer> lineNumbersOfDynamicSlice = fileHandler.readSliceLocFile(this.workDirectory, this.cPrgramDTO.getcFileNameWithoutExtension());
+				lineNumbersSet.addAll(lineNumbersOfDynamicSlice);
+			}
 		}
 
 		fileHandler.deleteWorkDirectory(new File(this.workDirectory));

@@ -96,5 +96,10 @@ public class FileRepositoryImpl implements FileRepository{
 		}
 		return lineNumbersOfSliceResult;
 	}
+
+	@Override
+	public boolean checkIfSliceLocFileExist(String workDirectory, String cFileNameWithoutExtension) {
+		return new File(workDirectory + cFileNameWithoutExtension + ".slice.loc").exists();
+	}
 	
 }

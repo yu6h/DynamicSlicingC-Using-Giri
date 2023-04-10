@@ -10,4 +10,5 @@ public interface FileRepository {
 	public void writeLocTxtFile(String workDirectory, String cFileName, int lineNumberOfTargetStatement );
 	public void createFile(String workDirectory, String string);
 	public List<Integer> readSliceLocFile(String workDirectory, String cFileNameWithoutExtension);
+	public boolean checkIfSliceLocFileExist(String workDirectory, String cFileNameWithoutExtension);
 }

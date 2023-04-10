@@ -20,32 +20,6 @@ public class CprogramConverterUseArgvAsInput implements CprogramConverter {
 	private String programContent;
 	
 	private ArrayDeque<InsertedLines> stackOfLineChanges;
-	
-	private String functionOfConvertSpace =
-            "void convertSpace110598067(char* str){\n" +
-                    "    char *result;char *specialSpace = \"nbsp;\";\n" +
-                    "    char *ptrResult;char *ptrOriginal;char *nextPtrOriginal;\n" +
-                    "    nextPtrOriginal = ptrOriginal = strstr(str, specialSpace);\n" +
-                    "    ptrResult = strstr(str,specialSpace);\n" +
-                    "    while(ptrOriginal!= NULL && nextPtrOriginal!=NULL){\n" +
-                    "        nextPtrOriginal  = strstr(ptrOriginal+ strlen(specialSpace), specialSpace);\n" +
-                    "        ptrOriginal = ptrOriginal + strlen(specialSpace);*ptrResult = ' ';\n" +
-                    "        while( *ptrResult++!='\\0' && ptrOriginal!=nextPtrOriginal  ){\n" +
-                    "            *ptrResult = *ptrOriginal++;};\n" +
-                    "    }}\n";
-
-    private String functionOfConvertNewLine =
-            "void convertNewLine110598067(char* str){\n" +
-                    "    char *result;    char *newLine = \"brnl;\";\n" +
-                    "    char *ptrResult;char *ptrOriginal;char *nextPtrOriginal;\n" +
-                    "    nextPtrOriginal = ptrOriginal = strstr(str, newLine);\n" +
-                    "    ptrResult = strstr(str,newLine);\n" +
-                    "    while(ptrOriginal!= NULL && nextPtrOriginal!=NULL){\n" +
-                    "        nextPtrOriginal  = strstr(ptrOriginal+ strlen(newLine), newLine);\n" +
-                    "        ptrOriginal = ptrOriginal + strlen(newLine);*ptrResult = '\\n';\n" +
-                    "        while( *ptrResult++!='\\0' && ptrOriginal!=nextPtrOriginal  ){\n" +
-                    "            *ptrResult = *ptrOriginal++;};\n" +
-                    "    }}\n";
 
     private String functionOfReadScanf =
             "int read110598067Scanf(const char * format, ... ){\n" +
@@ -98,6 +72,37 @@ public class CprogramConverterUseArgvAsInput implements CprogramConverter {
                     "    free(format);\n" +
                     "    return str;\n" +
                     "}\n";
+    
+    private String functionOfConvertSpecialCharacter =
+            "void convertSpecialCharacter110598067(char *str,char *old,char new){\n" +
+                    "    char *result;    \n" +
+                    "    char *ptrResult;char *ptrOriginal;char *nextPtrOriginal;\n" +
+                    "    nextPtrOriginal = ptrOriginal = strstr(str, old);\n" +
+                    "    ptrResult = strstr(str,old);\n" +
+                    "    while(ptrOriginal!= NULL && nextPtrOriginal!=NULL){\n" +
+                    "        nextPtrOriginal  = strstr(ptrOriginal+ strlen(old), old);\n" +
+                    "        ptrOriginal = ptrOriginal + strlen(old);\n" +
+                    "        *ptrResult = new;\n" +
+                    "        while( *ptrResult++!='\\0' && ptrOriginal!=nextPtrOriginal  ){\n" +
+                    "            *ptrResult = *ptrOriginal++;\n" +
+                    "        };\n" +
+                    "    }\n" +
+                    "}\n";
+    
+    private String functionOfConvertInputData =
+            "void convertInputData110598067(char *inputData){\n" +
+                    "    convertSpecialCharacter110598067(inputData,\"*BrnL\",'\\n');\n" +
+                    "    convertSpecialCharacter110598067(inputData,\"*NbsP\",' ');\n" +
+                    "    convertSpecialCharacter110598067(inputData,\"*AsD38\",'&');\n" +
+                    "    convertSpecialCharacter110598067(inputData,\"*LtS60\",'<');\n" +
+                    "    convertSpecialCharacter110598067(inputData,\"*GtS62\",'>');\n" +
+                    "    convertSpecialCharacter110598067(inputData,\"*QuT878\",'\\\"');\n" +
+                    "    convertSpecialCharacter110598067(inputData,\"*SqT877\",'\\'');\n" +
+                    "    convertSpecialCharacter110598067(inputData,\"*LpT203\",'(');\n" +
+                    "    convertSpecialCharacter110598067(inputData,\"*RpT301\",')');\n" +
+                    "    convertSpecialCharacter110598067(inputData,\"*EpT33\",'!');\n" +
+                    "    convertSpecialCharacter110598067(inputData,\"*PdS410\",'#');\n" +
+                    "}\n";
 	
 	public CprogramConverterUseArgvAsInput(StudentProgramDTO studentProgramDTO) {
 		this.studentProgramDTO = studentProgramDTO;
@@ -117,15 +122,31 @@ public class CprogramConverterUseArgvAsInput implements CprogramConverter {
 	}
 
 	private String convertInputDataInOneLine(String inputData) {
-		return inputData.replaceAll(" ","nbsp;").replaceAll("\n","brnl;");
-	}
+        return inputData.replace(" ","*NbsP13")
+                .replace("\n","*BrnL31")
+                .replace("&","*AsD38")
+                .replace("<","*LtS60")
+                .replace(">","*GtS62")
+                .replace("\"","*QuT878")
+                .replace("\'","*SqT877")
+                .replace("(","*LpT203")
+                .replace(")","*RpT301")
+                .replace("!","*EpT33")
+                .replace("#","*PdS410")
+                .replace("$","*DaS717")
+                .replace("`","*AcA180")
+                .replace("|","*HaF969")
+                .replace("\\","*BaS403");
+    }
 
 	public void convert(){
 		this.removeComments();
-        insertHeader("#include <string.h>\n");
-        insertHeader("#include <stdarg.h>\n");
         insertVariableForSscanf("int USED110598067;\n");
         insertVariableForSscanf("char* INPUT110598067;\n");
+        insertHeader("#include <stdlib.h>\n");
+        insertHeader("#include <stdio.h>\n");
+        insertHeader("#include <string.h>\n");
+        insertHeader("#include <stdarg.h>\n");
         int beginningOfMain = findBeginningOfMain();
         int lineNumber = countLineNumberInProgram( beginningOfMain);
         int indexToInsert = beginningOfMain;
@@ -134,8 +155,8 @@ public class CprogramConverterUseArgvAsInput implements CprogramConverter {
             this.insertNewLineAndRecordInStack(indexToInsert,lineNumber);
             indexToInsert = findBeginningOfMain();
         }
-        this.insertStatementsAndRecordInStack(this.functionOfConvertSpace,indexToInsert,lineNumber);
-        this.insertStatementsAndRecordInStack(this.functionOfConvertNewLine,indexToInsert,lineNumber);
+        this.insertStatementsAndRecordInStack(this.functionOfConvertInputData,indexToInsert,lineNumber);
+        this.insertStatementsAndRecordInStack(this.functionOfConvertSpecialCharacter,indexToInsert,lineNumber);
         this.insertStatementsAndRecordInStack(this.functionOfReadScanf,indexToInsert,lineNumber);
         this.insertStatementsAndRecordInStack(this.functionOfReadGetchar,indexToInsert,lineNumber);
         this.insertStatementsAndRecordInStack(this.functionOfReadGets,indexToInsert,lineNumber);
@@ -171,10 +192,10 @@ public class CprogramConverterUseArgvAsInput implements CprogramConverter {
 
         StringBuilder stringBuilder = new StringBuilder(this.programContent);
         if( statementExistInMainInTheSameLine){
-            stringBuilder.insert(indexToInsert,"\nINPUT110598067=argv[1];convertNewLine110598067(INPUT110598067);convertSpace110598067(INPUT110598067);\n");
+            stringBuilder.insert(indexToInsert,"\nINPUT110598067=argv[1];convertInputData110598067(INPUT110598067);\n");
             this.recordInsertedNewLinesInStack(lineNumber+1,2);
         }else {
-            stringBuilder.insert(indexToInsert,"\nINPUT110598067=argv[1];convertNewLine110598067(INPUT110598067);convertSpace110598067(INPUT110598067);");
+            stringBuilder.insert(indexToInsert,"\nINPUT110598067=argv[1];convertInputData110598067(INPUT110598067);");
             this.recordInsertedNewLinesInStack(lineNumber+1,1);
         }
         this.programContent = stringBuilder.toString();
