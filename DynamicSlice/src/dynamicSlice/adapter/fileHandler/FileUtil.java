@@ -3,13 +3,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 import dynamicSlice.usecase.out.FileRepository;
 
-public class FileRepositoryImpl implements FileRepository{
+public class FileUtil implements FileRepository, FileHandlerTool{
 	
 	public boolean deleteWorkDirectory(File directoryToBeDeleted) {
 	    File[] allContents = directoryToBeDeleted.listFiles();
@@ -21,8 +24,8 @@ public class FileRepositoryImpl implements FileRepository{
 	    return directoryToBeDeleted.delete();
 	}
 	
-	public void createWorkDirectory(File file) {
-		file.mkdirs();
+	public void createWorkDirectory(File workDirectory) {
+		workDirectory.mkdirs();
 	}
 	
 	public void writePreprocessedCprogramFile(String workDirectory, String cFileName, String preprocessedprogramContent) {
@@ -30,7 +33,7 @@ public class FileRepositoryImpl implements FileRepository{
 		      FileWriter myWriter = new FileWriter(workDirectory+cFileName);
 		      myWriter.write(preprocessedprogramContent);
 		      myWriter.close();
-		      System.out.println("Successfully wrote to the file.");
+		      System.out.println("Successfully wrote to the c file(used argv[] as input).");
 		    } catch (IOException e) {
 		      System.out.println("An error occurred.");
 		      e.printStackTrace();
@@ -65,20 +68,6 @@ public class FileRepositoryImpl implements FileRepository{
 			e.printStackTrace();
 		}
 	}
-
-	public void createFile(String workDirectory, String fileName) {
-		File myObj = new File(workDirectory+fileName);
-		try {
-			if (myObj.createNewFile()) {
-			    System.out.println("File created: " + myObj.getName());
-			  } else {
-			    System.out.println(fileName + " File already exists.");
-			  }
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 	
 	public List<Integer> readSliceLocFile(String workDirectory, String cFileNameWithoutExtension){
 		File myObj = new File(workDirectory + cFileNameWithoutExtension + ".slice.loc");
@@ -100,6 +89,31 @@ public class FileRepositoryImpl implements FileRepository{
 	@Override
 	public boolean checkIfSliceLocFileExist(String workDirectory, String cFileNameWithoutExtension) {
 		return new File(workDirectory + cFileNameWithoutExtension + ".slice.loc").exists();
+	}
+
+	@Override
+	public String readFile(String workDirectory, String fileName) {
+        byte[] encoded;
+        String fileContent = "";
+		try {
+			encoded = Files.readAllBytes(Paths.get(workDirectory  + fileName));
+			fileContent =new String(encoded, Charset.forName("UTF-8"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return fileContent;
+	}
+
+	@Override
+	public void writeFile(String workDirectory, String fileName, String content) {
+		try {
+		      FileWriter myWriter = new FileWriter(workDirectory+fileName);
+		      myWriter.write(content);
+		      myWriter.close();
+		    } catch (IOException e) {
+		      e.printStackTrace();
+		}
 	}
 	
 }

@@ -107,6 +107,7 @@ public class CprogramConverterUseArgvAsInput implements CprogramConverter {
 	public CprogramConverterUseArgvAsInput(StudentProgramDTO studentProgramDTO) {
 		this.studentProgramDTO = studentProgramDTO;
 		this.programContent = studentProgramDTO.getcProgramContent();
+		this.removeComments();
         this.stackOfLineChanges = new ArrayDeque<InsertedLines>();
 	}
 
@@ -152,7 +153,6 @@ public class CprogramConverterUseArgvAsInput implements CprogramConverter {
     }
 
 	public void convert(){
-		this.removeComments();
         insertVariableForSscanf("int USED110598067;\n");
         insertVariableForSscanf("char* INPUT110598067;\n");
         insertHeader("#include <stdlib.h>\n");

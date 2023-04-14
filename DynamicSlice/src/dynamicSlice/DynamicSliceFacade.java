@@ -3,7 +3,7 @@ package dynamicSlice;
 import java.util.List;
 
 import dynamicSlice.DTO.StudentProgramDTO;
-import dynamicSlice.adapter.fileHandler.FileRepositoryImpl;
+import dynamicSlice.adapter.fileHandler.FileUtil;
 import dynamicSlice.adapter.giriAdapter.GiriImpl;
 import dynamicSlice.adapter.program.CprogramConverter;
 import dynamicSlice.adapter.program.CprogramConverterUseArgvAsInput;
@@ -40,7 +40,7 @@ public class DynamicSliceFacade {
 		CprogramConverter converter = new CprogramConverterUseArgvAsInput(studentProgramDTO);
 		converter.convert();
 		CprogramUsedArgvAsInput formattedCProgramDTO = converter.generateCprogramExpertUsedArgvAsInput();
-		DynamicSlicingUseCase dynamicSliceservice = new GiriDynamciSliceService(new FileRepositoryImpl(),new GiriImpl());
+		DynamicSlicingUseCase dynamicSliceservice = new GiriDynamciSliceService(new FileUtil(),new GiriImpl());
 		List<Integer> lineNumbersOfResult = dynamicSliceservice.execute(formattedCProgramDTO);
 		lineNumbersOfResult = converter.convertChangedLineNumbersToOriginalLineNumbers(lineNumbersOfResult);
 		return lineNumbersOfResult;
