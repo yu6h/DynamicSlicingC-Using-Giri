@@ -87,12 +87,12 @@ public class CCompilerUbuntu extends MyCompiler {
 		public void run() {
 			Process p =null;
 			try {
-				p = Runtime.getRuntime().exec(workingDirectory+executableFile, null, new File(workingDirectory));
-				OutputStreamWriter writer = new OutputStreamWriter(p.getOutputStream());
-				writer.write(testData+"\n");
-				writer.flush();
+				p = Runtime.getRuntime().exec(workingDirectory+executableFile+" "+this.testData, null, new File(workingDirectory));
+//				OutputStreamWriter writer = new OutputStreamWriter(p.getOutputStream());
+//				writer.write(testData+"\n");
+//				writer.flush();
 				p.waitFor();
-				writer.close();		
+//				writer.close();		
 				
 				lock = false;
 				
