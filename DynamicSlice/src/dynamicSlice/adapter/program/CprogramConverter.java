@@ -1,13 +1,13 @@
 package dynamicSlice.adapter.program;
 import java.util.List;
 
-import dynamicSlice.entity.CprogramExpertUsedArgvAsInput;
+import dynamicSlice.entity.CprogramUsedArgvAsInput;
 
 public interface CprogramConverter {
 	
 	void convert();
 
-	public CprogramExpertUsedArgvAsInput generateCprogramExpertUsedArgvAsInput();
+	public CprogramUsedArgvAsInput generateCprogramExpertUsedArgvAsInput();
 	
 	List<Integer> convertChangedLineNumbersToOriginalLineNumbers(List<Integer> list);
 }

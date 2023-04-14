@@ -6,7 +6,7 @@ import dynamicSlice.adapter.fileHandler.FileRepositoryImpl;
 import dynamicSlice.adapter.giriAdapter.GiriImpl;
 import dynamicSlice.adapter.program.CprogramConverter;
 import dynamicSlice.adapter.program.CprogramConverterUseArgvAsInput;
-import dynamicSlice.entity.CprogramExpertUsedArgvAsInput;
+import dynamicSlice.entity.CprogramUsedArgvAsInput;
 import dynamicSlice.usecase.in.DynamicSlicingUseCase;
 import dynamicSlice.usecase.service.GiriDynamciSliceService;
 

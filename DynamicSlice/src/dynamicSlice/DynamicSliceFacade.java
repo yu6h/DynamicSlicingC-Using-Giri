@@ -7,7 +7,7 @@ import dynamicSlice.adapter.fileHandler.FileRepositoryImpl;
 import dynamicSlice.adapter.giriAdapter.GiriImpl;
 import dynamicSlice.adapter.program.CprogramConverter;
 import dynamicSlice.adapter.program.CprogramConverterUseArgvAsInput;
-import dynamicSlice.entity.CprogramExpertUsedArgvAsInput;
+import dynamicSlice.entity.CprogramUsedArgvAsInput;
 import dynamicSlice.usecase.in.DynamicSlicingUseCase;
 import dynamicSlice.usecase.service.GiriDynamciSliceService;
 
@@ -39,7 +39,7 @@ public class DynamicSliceFacade {
 	public List<Integer> execute() {
 		CprogramConverter converter = new CprogramConverterUseArgvAsInput(studentProgramDTO);
 		converter.convert();
-		CprogramExpertUsedArgvAsInput formattedCProgramDTO = converter.generateCprogramExpertUsedArgvAsInput();
+		CprogramUsedArgvAsInput formattedCProgramDTO = converter.generateCprogramExpertUsedArgvAsInput();
 		DynamicSlicingUseCase dynamicSliceservice = new GiriDynamciSliceService(new FileRepositoryImpl(),new GiriImpl());
 		List<Integer> lineNumbersOfResult = dynamicSliceservice.execute(formattedCProgramDTO);
 		lineNumbersOfResult = converter.convertChangedLineNumbersToOriginalLineNumbers(lineNumbersOfResult);

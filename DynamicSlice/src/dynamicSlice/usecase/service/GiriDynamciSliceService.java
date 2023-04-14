@@ -9,7 +9,7 @@ import java.util.concurrent.Callable;
 
 import dynamicSlice.adapter.fileHandler.FileRepositoryImpl;
 import dynamicSlice.adapter.giriAdapter.GiriImpl;
-import dynamicSlice.entity.CprogramExpertUsedArgvAsInput;
+import dynamicSlice.entity.CprogramUsedArgvAsInput;
 import dynamicSlice.usecase.in.DynamicSlicingUseCase;
 import dynamicSlice.usecase.in.Giri;
 import dynamicSlice.usecase.out.FileRepository;
@@ -22,7 +22,7 @@ public class GiriDynamciSliceService implements DynamicSlicingUseCase{
 	
 	private String workDirectoryInContainer;
 
-	private CprogramExpertUsedArgvAsInput cPrgramDTO;
+	private CprogramUsedArgvAsInput cPrgramDTO;
 
 	private List<Integer> linNumbersOfSliceResults;
 
@@ -45,7 +45,7 @@ public class GiriDynamciSliceService implements DynamicSlicingUseCase{
 		return workDirectoryInContainer;
 	}
 	
-	public List<Integer> execute(CprogramExpertUsedArgvAsInput cPrgramDTO){
+	public List<Integer> execute(CprogramUsedArgvAsInput cPrgramDTO){
 		this.setCProgramInfoUsedArgvAsInput(cPrgramDTO);
 		TreeSet<Integer> lineNumbersSet = new TreeSet<Integer>();
 
@@ -55,7 +55,7 @@ public class GiriDynamciSliceService implements DynamicSlicingUseCase{
 		fileHandler.deleteWorkDirectory(new File(this.workDirectory));
 		fileHandler.createWorkDirectory(new File(this.workDirectory));
 		
-		fileHandler.writePreprocessedCprogramFile(this.workDirectory, this.cPrgramDTO.getcFileName(), this.cPrgramDTO.getcProgramContentUsedArgvAsInput());
+		fileHandler.writePreprocessedCprogramFile(this.workDirectory, this.cPrgramDTO.getcFileName(), this.cPrgramDTO.getProgramContent());
 		fileHandler.writeMakeFile(this.workDirectory,this.cPrgramDTO.getcFileNameWithoutExtension(), this.cPrgramDTO.getInputData());
 		List<Integer> lineNumberOfTargetStatement = this.cPrgramDTO.getLineNumbersOfOutputStatement();
 
@@ -94,7 +94,7 @@ public class GiriDynamciSliceService implements DynamicSlicingUseCase{
 				+ this.cPrgramDTO.getQuetionID() + "/";
 	}
 
-	private void setCProgramInfoUsedArgvAsInput(CprogramExpertUsedArgvAsInput cPrgramDTO) {
+	private void setCProgramInfoUsedArgvAsInput(CprogramUsedArgvAsInput cPrgramDTO) {
 		this.cPrgramDTO = cPrgramDTO;
 	}
 

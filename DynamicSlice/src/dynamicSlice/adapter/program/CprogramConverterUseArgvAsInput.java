@@ -9,11 +9,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import dynamicSlice.DTO.StudentProgramDTO;
-import dynamicSlice.entity.CprogramExpertUsedArgvAsInput;
+import dynamicSlice.entity.CprogramUsedArgvAsInput;
 
 public class CprogramConverterUseArgvAsInput implements CprogramConverter {
 	
-	CprogramExpertUsedArgvAsInput adaptedProgram;
+	CprogramUsedArgvAsInput adaptedProgram;
 	
 	StudentProgramDTO studentProgramDTO;
 	
@@ -108,17 +108,29 @@ public class CprogramConverterUseArgvAsInput implements CprogramConverter {
 		this.studentProgramDTO = studentProgramDTO;
 		this.programContent = studentProgramDTO.getcProgramContent();
         this.stackOfLineChanges = new ArrayDeque<InsertedLines>();
-		
 	}
 
-	public CprogramExpertUsedArgvAsInput generateCprogramExpertUsedArgvAsInput() {
-		adaptedProgram = new CprogramExpertUsedArgvAsInput();
+	public CprogramUsedArgvAsInput generateCprogramExpertUsedArgvAsInput() {
+		adaptedProgram = new CprogramUsedArgvAsInput();
 		adaptedProgram.setcFileName(this.studentProgramDTO.getcFileName());
+		adaptedProgram.setcFileNameWithoutExtension(generateCFileNameWithoutExtension(this.studentProgramDTO.getcFileName()));
 		adaptedProgram.setQuetionID(this.studentProgramDTO.getQuetionID());
 		adaptedProgram.setStudentID(this.studentProgramDTO.getStudentID());
 		adaptedProgram.setInputData(this.convertInputDataInOneLine(this.studentProgramDTO.getInputData()));
-		adaptedProgram.setcProgramContentUsedArgvAsInput(this.programContent);
+		adaptedProgram.setProgramContent(this.programContent);
+		adaptedProgram.setLineNumbersOfOutputStatement(this.findLineNumbersOfOutputStatement());
 		return adaptedProgram;
+	}
+	
+    private List<Integer> findLineNumbersOfOutputStatement() {
+        List<Integer> startIndexes = getStartIndexes(this.programContent,"(?<!\\w)(?:printf|puts|putc|putchar|fputs)[\\s]*\\(");
+        List<Integer> lineNumbers = startIndexes.stream().filter(x-> !isInsideStringDoubleQuotes(x)).map(x->countLineNumberInProgram(x)).collect(Collectors.toList());
+        return lineNumbers;
+    }
+
+	private String generateCFileNameWithoutExtension(String cFileName) {
+		String cFileNameWithoutExtension = cFileName.substring(0, cFileName.indexOf("."));
+		return cFileNameWithoutExtension;
 	}
 
 	private String convertInputDataInOneLine(String inputData) {
