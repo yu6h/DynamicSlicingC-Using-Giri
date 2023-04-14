@@ -64,8 +64,8 @@ public class CprogramExpertUsedArgvAsInput {
 	
     public List<Integer> getLineNumbersOfOutputStatement() {
         List<Integer> startIndexes = getStartIndexes(this.programContent,"(?<!\\w)(?:printf|puts|putc|putchar|fputs)[\\s]*\\(");
-        List<Integer> result = startIndexes.stream().filter(x-> !isInsideStringDoubleQuotes(x)).map(x->countLineNumberInProgram(x)).collect(Collectors.toList());
-        return result;
+        List<Integer> lineNumbers = startIndexes.stream().filter(x-> !isInsideStringDoubleQuotes(x)).map(x->countLineNumberInProgram(x)).collect(Collectors.toList());
+        return lineNumbers;
     }
 	
 	private int countLineNumberInProgram(int indexInProgram) {
