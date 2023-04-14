@@ -26,7 +26,7 @@ public class CCoverageService {
 	
 	private int quetionID;
 
-	private String inputData;
+	private String inputDataAtCMD;
 	
 	private List<Integer> lineNumbersOfUncoveredStatement;
 	
@@ -48,7 +48,7 @@ public class CCoverageService {
     	this.fileTool.createWorkDirectory(new File(this.workdirectory));
     	this.fileTool.writeFile(this.workdirectory, this.cFileName, this.programContent);
     	myCompiler.compile(this.cFileName);
-    	myCompiler.run(this.cFileName, this.inputData);
+    	myCompiler.run(this.cFileName, this.inputDataAtCMD);
     	GcovTool gcovTool = factory.createGcovTool(this.workdirectory);
     	gcovTool.runGcovCommand(this.cFileName);
     	String gcovFileContent = this.fileTool.readFile(this.workdirectory , this.cFileName+".gcov");
@@ -137,8 +137,8 @@ public class CCoverageService {
 		this.cFileName = cFileName;
 	}
 
-	public void setInputData(String inputData) {
-		this.inputData = inputData;
+	public void setInputDataAtCMD(String inputDataAtCMD) {
+		this.inputDataAtCMD = inputDataAtCMD;
 	} 
 	
 	private void initializeWorkdirectory(String workdirectory) {

@@ -79,22 +79,11 @@ public class CCompilerUbuntu extends MyCompiler {
 			this.executableFile = executableFile;
 		}
 		
-		
-		public boolean isLock() {
-			return lock;
-		}
-		
 		public void run() {
 			Process p =null;
 			try {
 				p = Runtime.getRuntime().exec(workingDirectory+executableFile+" "+this.testData, null, new File(workingDirectory));
-//				OutputStreamWriter writer = new OutputStreamWriter(p.getOutputStream());
-//				writer.write(testData+"\n");
-//				writer.flush();
 				p.waitFor();
-//				writer.close();		
-				
-				lock = false;
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

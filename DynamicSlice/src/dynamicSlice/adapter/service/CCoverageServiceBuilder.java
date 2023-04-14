@@ -30,8 +30,8 @@ public class CCoverageServiceBuilder {
         this.cCoverageService.setQuetionID(quetionID);
         return this;
     }
-    public CCoverageServiceBuilder buildInputData(String inputData) {
-        this.cCoverageService.setInputData(inputData);
+    public CCoverageServiceBuilder buildInputDataAtCMD(String inputDataAtCMD) {
+        this.cCoverageService.setInputDataAtCMD(inputDataAtCMD);
         return this;
     }
     public CCoverageServiceBuilder buildCommandToolFactory(CommandToolFactory factory) {

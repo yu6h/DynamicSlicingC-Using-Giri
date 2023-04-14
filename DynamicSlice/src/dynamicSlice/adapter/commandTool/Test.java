@@ -12,7 +12,7 @@ public class Test {
 		CCoverageService service = builder.buildCFileName("11059.c")
 				.buildStudentID("110598067")
 				.buildQuetionID(2)
-				.buildInputData("2*NbsP133*BrnL31")
+				.buildInputDataAtCMD("2*NbsP133*BrnL31")
 				.buildProgramContent("#include <stdarg.h>\n" + 
 						"#include <string.h>\n" + 
 						"#include <stdlib.h>\n" + 
