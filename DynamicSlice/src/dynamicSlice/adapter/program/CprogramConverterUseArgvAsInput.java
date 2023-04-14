@@ -13,7 +13,7 @@ import dynamicSlice.entity.CprogramUsedArgvAsInput;
 
 public class CprogramConverterUseArgvAsInput implements CprogramConverter {
 	
-	CprogramUsedArgvAsInput adaptedProgram;
+	CprogramUsedArgvAsInput convertedProgram;
 	
 	StudentProgramDTO studentProgramDTO;
 	
@@ -111,15 +111,15 @@ public class CprogramConverterUseArgvAsInput implements CprogramConverter {
 	}
 
 	public CprogramUsedArgvAsInput generateCprogramExpertUsedArgvAsInput() {
-		adaptedProgram = new CprogramUsedArgvAsInput();
-		adaptedProgram.setcFileName(this.studentProgramDTO.getcFileName());
-		adaptedProgram.setcFileNameWithoutExtension(generateCFileNameWithoutExtension(this.studentProgramDTO.getcFileName()));
-		adaptedProgram.setQuetionID(this.studentProgramDTO.getQuetionID());
-		adaptedProgram.setStudentID(this.studentProgramDTO.getStudentID());
-		adaptedProgram.setInputData(this.convertInputDataInOneLine(this.studentProgramDTO.getInputData()));
-		adaptedProgram.setProgramContent(this.programContent);
-		adaptedProgram.setLineNumbersOfOutputStatement(this.findLineNumbersOfOutputStatement());
-		return adaptedProgram;
+		convertedProgram = new CprogramUsedArgvAsInput();
+		convertedProgram.setcFileName(this.studentProgramDTO.getcFileName());
+		convertedProgram.setcFileNameWithoutExtension(generateCFileNameWithoutExtension(this.studentProgramDTO.getcFileName()));
+		convertedProgram.setQuetionID(this.studentProgramDTO.getQuetionID());
+		convertedProgram.setStudentID(this.studentProgramDTO.getStudentID());
+		convertedProgram.setInputData(this.convertInputDataInOneLine(this.studentProgramDTO.getInputData()));
+		convertedProgram.setProgramContent(this.programContent);
+		convertedProgram.setLineNumbersOfOutputStatement(this.findLineNumbersOfOutputStatement());
+		return convertedProgram;
 	}
 	
     private List<Integer> findLineNumbersOfOutputStatement() {
