@@ -9,6 +9,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import dynamicSlice.DTO.StudentProgramDTO;
+import dynamicSlice.adapter.commandTool.factory.CommandToolFactoryUbuntuImpl;
+import dynamicSlice.adapter.fileHandler.FileUtil;
+import dynamicSlice.adapter.service.CCoverageService;
+import dynamicSlice.adapter.service.CCoverageServiceBuilder;
 import dynamicSlice.entity.CprogramUsedArgvAsInput;
 
 public class CprogramConverterUseArgvAsInput implements CprogramConverter {
@@ -124,8 +128,22 @@ public class CprogramConverterUseArgvAsInput implements CprogramConverter {
 	}
 	
     private List<Integer> findLineNumbersOfOutputStatement() {
+    	CCoverageService cCoverageServiceservice= new CCoverageServiceBuilder().buildStudentID(this.convertedProgram.getStudentID())
+    	.buildQuetionID(this.convertedProgram.getQuetionID())
+    	.buildCFileName(this.convertedProgram.getcFileName())
+    	.buildInputDataAtCMD(this.convertedProgram.getInputData())
+    	.buildProgramContent(this.convertedProgram.getProgramContent())
+    	.buildFileHandlerTool(new FileUtil())
+    	.buildCommandToolFactory(new CommandToolFactoryUbuntuImpl())
+    	.build();
+    	cCoverageServiceservice.analyze();
+    	List<Integer> lineNumbersOfUncoveredStatement = cCoverageServiceservice.getLineNumbersOfUncoveredStatement();
         List<Integer> startIndexes = getStartIndexes(this.programContent,"(?<!\\w)(?:printf|puts|putc|putchar|fputs)[\\s]*\\(");
-        List<Integer> lineNumbers = startIndexes.stream().filter(x-> !isInsideStringDoubleQuotes(x)).map(x->countLineNumberInProgram(x)).collect(Collectors.toList());
+        List<Integer> lineNumbers = startIndexes.stream()
+        		.filter(x-> !isInsideStringDoubleQuotes(x))
+        		.map(x->countLineNumberInProgram(x))
+        		.filter(lineNumber -> !lineNumbersOfUncoveredStatement.contains(lineNumber))
+        		.collect(Collectors.toList());
         return lineNumbers;
     }
 

@@ -21,18 +21,16 @@ public class Main {
 		dynamciSlice.setcProgramContent("#include<stdio.h>\n" + 
 				"#include<stdlib.h>\n" + 
 				"int main(){\n" + 
-				"    int a,b,i,s;\n" + 
+				"    int a,b;\n" + 
 				"    scanf(\"%d %d\",&a,&b);\n" + 
-				"    i = 1; \n" + 
-				"    s = 1; \n" + 
+				"    int n = a+b;\n" + 
 				"    if(a>0 && b>0){ \n" + 
-				"            s+=5;//s+=2;\n" + 
-				"            a-=3;//a-=1; \n" + 
+				"        a = a-b;//a*b;\n" + 
+				"        printf(\"%d\\n\",b);\n" + 
 				"    }else \n" + 
-				"            s*=4;//s*=2; \n" + 
+				"        a = a+b;// a-b;\n" + 
 				"    printf(\n" + 
-				"        \"%d\\n\",s);\n" + 
-				"    printf(\"%d\\n\",a);\n" + 
+				"        \"%d\\n\",a);\n" + 
 				"    return 0;\n" + 
 				"}\n");
 		List<Integer> lineNumbersOfResult = dynamciSlice.execute();
