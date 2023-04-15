@@ -94,19 +94,23 @@ public class CprogramConverterUseArgvAsInput implements CprogramConverter {
                     "}\n";
     
     private String functionOfConvertInputData =
-            "void convertInputData110598067(char *inputData){\n" +
-                    "    convertSpecialCharacter110598067(inputData,\"*BrnL\",'\\n');\n" +
-                    "    convertSpecialCharacter110598067(inputData,\"*NbsP\",' ');\n" +
-                    "    convertSpecialCharacter110598067(inputData,\"*AsD38\",'&');\n" +
-                    "    convertSpecialCharacter110598067(inputData,\"*LtS60\",'<');\n" +
-                    "    convertSpecialCharacter110598067(inputData,\"*GtS62\",'>');\n" +
-                    "    convertSpecialCharacter110598067(inputData,\"*QuT878\",'\\\"');\n" +
-                    "    convertSpecialCharacter110598067(inputData,\"*SqT877\",'\\'');\n" +
-                    "    convertSpecialCharacter110598067(inputData,\"*LpT203\",'(');\n" +
-                    "    convertSpecialCharacter110598067(inputData,\"*RpT301\",')');\n" +
-                    "    convertSpecialCharacter110598067(inputData,\"*EpT33\",'!');\n" +
-                    "    convertSpecialCharacter110598067(inputData,\"*PdS410\",'#');\n" +
-                    "}\n";
+            "void convertInputData110598067(char *inputData){\n" + 
+            "    convertSpecialCharacter110598067(inputData,\"*BrnL31\",'\\n');\n" + 
+            "    convertSpecialCharacter110598067(inputData,\"*NbsP13\",' ');\n" + 
+            "    convertSpecialCharacter110598067(inputData,\"*AsD38\",'&');\n" + 
+            "    convertSpecialCharacter110598067(inputData,\"*LtS60\",'<');\n" + 
+            "    convertSpecialCharacter110598067(inputData,\"*GtS62\",'>');\n" + 
+            "    convertSpecialCharacter110598067(inputData,\"*QuT878\",'\\\"');\n" + 
+            "    convertSpecialCharacter110598067(inputData,\"*SqT877\",'\\'');\n" + 
+            "    convertSpecialCharacter110598067(inputData,\"*LpT203\",'(');\n" + 
+            "    convertSpecialCharacter110598067(inputData,\"*RpT301\",')');\n" + 
+            "    convertSpecialCharacter110598067(inputData,\"*EpT33\",'!');\n" + 
+            "    convertSpecialCharacter110598067(inputData,\"*PdS410\",'#');\n" + 
+            "    convertSpecialCharacter110598067(inputData,\"*DaS717\",'$');\n" + 
+            "    convertSpecialCharacter110598067(inputData,\"*AcA180\",'`');\n" + 
+            "    convertSpecialCharacter110598067(inputData,\"*HaF969\",'|');\n" + 
+            "    convertSpecialCharacter110598067(inputData,\"*BaS403\",'\\\\');\n" + 
+            "}\n";
 	
 	public CprogramConverterUseArgvAsInput(StudentProgramDTO studentProgramDTO) {
 		this.studentProgramDTO = studentProgramDTO;
