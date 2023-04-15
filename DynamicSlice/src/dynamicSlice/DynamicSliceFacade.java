@@ -8,7 +8,9 @@ import dynamicSlice.adapter.giriAdapter.GiriImpl;
 import dynamicSlice.adapter.program.CprogramConverter;
 import dynamicSlice.adapter.program.CprogramConverterUseArgvAsInput;
 import dynamicSlice.entity.CprogramUsedArgvAsInput;
-import dynamicSlice.usecase.in.DynamicSlicingUseCase;
+import dynamicSlice.usecase.in.DynamicSliceInput;
+import dynamicSlice.usecase.in.DynamicSliceOutput;
+import dynamicSlice.usecase.in.DynamicSliceUseCase;
 import dynamicSlice.usecase.service.GiriDynamciSliceService;
 
 public class DynamicSliceFacade {
@@ -40,8 +42,11 @@ public class DynamicSliceFacade {
 		CprogramConverter converter = new CprogramConverterUseArgvAsInput(studentProgramDTO);
 		converter.convert();
 		CprogramUsedArgvAsInput formattedCProgramDTO = converter.generateCprogramExpertUsedArgvAsInput();
-		DynamicSlicingUseCase dynamicSliceservice = new GiriDynamciSliceService(new FileUtil(),new GiriImpl());
-		List<Integer> lineNumbersOfResult = dynamicSliceservice.execute(formattedCProgramDTO);
+		DynamicSliceUseCase dynamicSliceservice = new GiriDynamciSliceService(new FileUtil(),new GiriImpl());
+		DynamicSliceInput input = new DynamicSliceInput();
+		input.setcProgram(formattedCProgramDTO);
+		DynamicSliceOutput output = dynamicSliceservice.execute(input);
+		List<Integer> lineNumbersOfResult = output.getLineNumbersOfDynamicSlicing();
 		lineNumbersOfResult = converter.convertChangedLineNumbersToOriginalLineNumbers(lineNumbersOfResult);
 		return lineNumbersOfResult;
 	}

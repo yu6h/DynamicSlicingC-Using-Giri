@@ -3,8 +3,8 @@ import java.util.List;
 
 import dynamicSlice.entity.CprogramUsedArgvAsInput;
 
-public interface DynamicSlicingUseCase {
+public interface DynamicSliceUseCase {
 
-	public List<Integer> execute(CprogramUsedArgvAsInput input);
+	public DynamicSliceOutput execute(DynamicSliceInput input);
 	
 }

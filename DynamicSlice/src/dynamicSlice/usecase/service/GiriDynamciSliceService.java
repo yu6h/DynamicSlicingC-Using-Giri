@@ -10,11 +10,13 @@ import java.util.concurrent.Callable;
 import dynamicSlice.adapter.fileHandler.FileUtil;
 import dynamicSlice.adapter.giriAdapter.GiriImpl;
 import dynamicSlice.entity.CprogramUsedArgvAsInput;
-import dynamicSlice.usecase.in.DynamicSlicingUseCase;
+import dynamicSlice.usecase.in.DynamicSliceInput;
+import dynamicSlice.usecase.in.DynamicSliceOutput;
+import dynamicSlice.usecase.in.DynamicSliceUseCase;
 import dynamicSlice.usecase.in.Giri;
 import dynamicSlice.usecase.out.FileRepository;
 
-public class GiriDynamciSliceService implements DynamicSlicingUseCase{
+public class GiriDynamciSliceService implements DynamicSliceUseCase{
 	
 	private String workDirectory;
 	
@@ -45,8 +47,8 @@ public class GiriDynamciSliceService implements DynamicSlicingUseCase{
 		return workDirectoryInContainer;
 	}
 	
-	public List<Integer> execute(CprogramUsedArgvAsInput cPrgramDTO){
-		this.setCProgramInfoUsedArgvAsInput(cPrgramDTO);
+	public DynamicSliceOutput execute(DynamicSliceInput input){
+		this.cPrgramDTO = input.getcProgram();
 		TreeSet<Integer> lineNumbersSet = new TreeSet<Integer>();
 
 		
@@ -78,7 +80,10 @@ public class GiriDynamciSliceService implements DynamicSlicingUseCase{
 
 		fileHandler.deleteWorkDirectory(new File(this.workDirectory));
 		this.linNumbersOfSliceResults = new ArrayList<Integer>(lineNumbersSet);
-		return this.linNumbersOfSliceResults;
+		
+		DynamicSliceOutput output = new DynamicSliceOutput();
+		output.setLineNumbersOfDynamicSlicing(this.linNumbersOfSliceResults);
+		return output;
 	}
 	
 	private void setContainerName(String containerName) {
