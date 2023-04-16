@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
-import dynamicSlice.adapter.commandTool.MyCompiler;
-
 public class CCompilerUbuntu extends MyCompiler {
 
 	
@@ -84,9 +82,7 @@ public class CCompilerUbuntu extends MyCompiler {
 			try {
 				p = Runtime.getRuntime().exec(workingDirectory+executableFile+" "+this.testData, null, new File(workingDirectory));
 				p.waitFor();
-				
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InterruptedException e) {
             	e.printStackTrace();

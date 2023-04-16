@@ -1,4 +1,5 @@
 package dynamicSlice.adapter.giriAdapter;
+import java.io.File;
 import java.io.IOException;
 
 import dynamicSlice.usecase.in.Giri;
@@ -31,7 +32,6 @@ public class GiriImpl implements Giri{
 			 try {
 				process.waitFor();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} catch (IOException e) {
@@ -41,17 +41,15 @@ public class GiriImpl implements Giri{
 	}
 
 	public void make(String workDirectoryInContainer) {
-		Process process = null;
-		String command = String.format("docker exec -i -w %s %s make", workDirectoryInContainer, this.containerName);
+		GiriMakeCommandRunner make = new GiriMakeCommandRunner(workDirectoryInContainer,this.containerName);
+		make.start();
 		try {
-			process = Runtime.getRuntime().exec(command);
-			try {
-				process.waitFor();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			make.join(5000);
+			if(make.isAlive()) {
+				make.interrupt();
 			}
-		} catch (IOException e) {
+		} catch (InterruptedException e) {
+			System.out.println("time of make process exceed!!");
 			e.printStackTrace();
 		}
 		
@@ -116,5 +114,29 @@ public class GiriImpl implements Giri{
 		}
 		
 	}
-
+	class GiriMakeCommandRunner extends Thread{
+		private String workDirectoryInContainer;
+		private String containerName;
+		
+		public GiriMakeCommandRunner(String workDirectoryInContainer, String containerName) {
+			this.workDirectoryInContainer = workDirectoryInContainer;
+			this.containerName = containerName;
+		}
+		
+		public void run() {
+			Process p =null;
+			String commandOfMake = String.format("docker exec -i -w %s %s make", this.workDirectoryInContainer, this.containerName);
+			try {
+				p = Runtime.getRuntime().exec(commandOfMake);
+				p.waitFor();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				System.out.println("time of make process exceed!!");
+            }finally {
+				p.destroy();
+			}
+			
+		}
+	}
 }

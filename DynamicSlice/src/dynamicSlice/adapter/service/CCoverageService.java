@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import dynamicSlice.adapter.commandTool.MyCompiler;
 import dynamicSlice.adapter.commandTool.ProgramLanguage;
+import dynamicSlice.adapter.commandTool.compiler.MyCompiler;
 import dynamicSlice.adapter.commandTool.factory.CommandToolFactory;
 import dynamicSlice.adapter.commandTool.gcov.GcovTool;
 import dynamicSlice.adapter.fileHandler.FileHandlerTool;
