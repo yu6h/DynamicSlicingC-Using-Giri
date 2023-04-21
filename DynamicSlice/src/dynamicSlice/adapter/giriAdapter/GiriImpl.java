@@ -1,8 +1,11 @@
 package dynamicSlice.adapter.giriAdapter;
+
 import java.io.File;
 import java.io.IOException;
 
+
 import dynamicSlice.usecase.in.Giri;
+import dynamicSlice.usecase.out.FileRepository;
 
 public class GiriImpl implements Giri{
 	
@@ -36,26 +39,32 @@ public class GiriImpl implements Giri{
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		}finally {
+			process.destroy();
 		}
 		
 	}
 
-	public void make(String workDirectoryInContainer) {
+	public void makeAndDownloadSlicLocFileIntoWorkDirectory(String workDirectoryInContainer, String workDirectory
+			,String cFileNameWithoutExtension,FileRepository fileHandler) {
 		GiriMakeCommandRunner make = new GiriMakeCommandRunner(workDirectoryInContainer,this.containerName);
 		make.start();
 		try {
-			make.join(5000);
+			for(int i=0;i<18;i++) {
+				make.join(500);
+				this.downloadSlicLocFileIntoWorkDirectory(workDirectoryInContainer, workDirectory, cFileNameWithoutExtension);
+				boolean fileExist = fileHandler.checkIfSliceLocFileExist(workDirectory, cFileNameWithoutExtension);
+				if(fileExist) break;
+			}
 			if(make.isAlive()) {
 				make.interrupt();
 			}
+
 		} catch (InterruptedException e) {
-			System.out.println("time of make process exceed!!");
 			e.printStackTrace();
 		}
 		
 	}
-
-
 	public void downloadSlicLocFileIntoWorkDirectory(String workDirectoryInContainer, String workDirectory,String cFileNameWithoutExtension) {
 		String sliceLocFileName = cFileNameWithoutExtension + ".slice.loc";
 		this.downloadFileFromContainer(this.containerName, sliceLocFileName, workDirectoryInContainer, workDirectory);
@@ -73,16 +82,32 @@ public class GiriImpl implements Giri{
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		}finally {
+			process.destroy();
 		}
 		
 	}
 	public static void main(String[] args) {
 		GiriImpl giri = new GiriImpl();
 		String dir = "/giri/test/UnitTests/ST";
+		String filePath = "";
 		giri.setContainerName("giriContainer");
+		String dir2 = "/giri/test/UnitTests/test1/";
+		String file = "extlibcalls.c";
+		
 //		giri.createWorkDirectoryInContainer(dir);
-		giri.deleteWorkDirectoryInContainer(dir);
+//		giri.deleteWorkDirectoryInContainer(dir);
+		
+		boolean fileExists = giri.checkIfFileExists(dir2,"/home/aaron/",file);
+		System.out.println(fileExists);
 	}
+	
+	private boolean checkIfFileExists(String workDirectoryInContainer,String workDirectory,String file) {
+		this.downloadFileFromContainer(this.containerName, file, workDirectoryInContainer, workDirectory);
+		return new File(workDirectory + file ).exists();
+	}
+	
+
 	public void createWorkDirectoryInContainer(String workDirectoryInContainer) {
 		Process process = null;
 		String command = String.format("docker exec -i %s mkdir %s", containerName, workDirectoryInContainer);
@@ -95,6 +120,8 @@ public class GiriImpl implements Giri{
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		}finally {
+			process.destroy();
 		}
 	}
 
@@ -111,6 +138,8 @@ public class GiriImpl implements Giri{
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			process.destroy();
 		}
 		
 	}
@@ -132,7 +161,7 @@ public class GiriImpl implements Giri{
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (InterruptedException e) {
-				System.out.println("time of make process exceed!!");
+				System.out.println("process of make is interrupted!");
             }finally {
 				p.destroy();
 			}

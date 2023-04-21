@@ -68,7 +68,7 @@ public class FileUtil implements FileRepository, FileHandlerTool{
 			e.printStackTrace();
 		}
 	}
-	
+	@Override
 	public List<Integer> readSliceLocFile(String workDirectory, String cFileNameWithoutExtension){
 		File myObj = new File(workDirectory + cFileNameWithoutExtension + ".slice.loc");
 		List<Integer> lineNumbersOfSliceResult = new ArrayList<Integer>();
@@ -114,6 +114,11 @@ public class FileUtil implements FileRepository, FileHandlerTool{
 		    } catch (IOException e) {
 		      e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void deleteSliceLocFile(String workDirectory, String cFileNameWithoutExtension) {
+		new File(workDirectory + cFileNameWithoutExtension + ".slice.loc").delete();		
 	}
 	
 }

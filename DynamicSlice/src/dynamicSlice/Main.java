@@ -17,206 +17,84 @@ public class Main {
 		DynamicSliceFacade dynamciSlice = new DynamicSliceFacade();
 		dynamciSlice.setStudentID("110598066");
 		dynamciSlice.setQuetionID(1);
-		dynamciSlice.setInputData("14\n" + 
-				"0 0 0 0 0 0 0 0 0 0 0 1 0 0\n" + 
-				"0 0 0 0 0 0 1 0 0 0 0 0 0 0\n" + 
-				"0 0 0 0 0 0 0 0 0 0 0 0 1 0\n" + 
-				"0 0 0 1 0 0 0 0 0 0 0 0 0 0\n" + 
-				"0 1 0 0 0 0 0 0 0 0 0 0 0 0\n" + 
-				"0 0 0 0 0 0 0 0 0 1 0 0 0 0\n" + 
-				"0 0 0 0 0 0 0 0 0 0 1 0 0 0\n" + 
-				"0 0 1 0 0 0 0 0 0 0 0 0 0 0\n" + 
-				"0 0 0 0 0 0 0 0 1 0 0 0 0 0\n" + 
-				"0 0 0 0 1 0 0 0 0 0 0 0 0 0\n" + 
-				"0 0 0 0 0 0 0 1 0 0 0 0 0 0\n" + 
-				"0 0 0 0 0 0 0 0 0 0 0 0 0 1\n" + 
-				"1 0 0 0 0 0 0 0 0 0 0 0 0 0\n" + 
-				"0 0 0 0 0 1 0 0 0 0 0 0 0 0\n" + 
-				"");
+		dynamciSlice.setInputData("65\n" + 
+				"2 6 6 5 6 8 0 0 5 7 8 1 7 4 8 2 0 0 8 4 0 6 0 2 1 9 9 9 5 5 2 5 3 5 7 4 5 5 8 8 6 8 5 8 0 0 0 8 1 2 4 6 1 7 1 7 7 6 6 6 4 8 8 4 9\n");
 		dynamciSlice.setcProgramContent("#include <stdio.h>\n" + 
-				"#include <stdlib.h>\n" + 
 				"#include <string.h>\n" + 
 				"\n" + 
-				"void GetSequence(char *input,int *matrix)\n" + 
+				"int printArray(char array[])\n" + 
 				"{\n" + 
-				"    int counter = 0;\n" + 
-				"    for (int i = 0; i < strlen(input); i++)\n" + 
+				"    int i = 0;\n" + 
+				"    while (array[i] != '\\0')\n" + 
 				"    {\n" + 
-				"        if (input[i] != ' ')\n" + 
-				"        {\n" + 
-				"            matrix[counter++] = input[i] - '0';\n" + 
-				"        }\n" + 
+				"        printf(\"%c\", array[i]);\n" + 
+				"        i++;\n" + 
 				"    }\n" + 
+				"    printf(\"\\n\");\n" + 
 				"}\n" + 
 				"\n" + 
-				"int CalculateAttacks(int m)\n" + 
+				"int S(char X[], char Y[])\n" + 
 				"{\n" + 
-				"    int res = 0;\n" + 
-				"\n" + 
-				"    for (int i = 0; i < m; i++)\n" + 
+				"    int count = 0;\n" + 
+				"    if (strlen(X) == 0)\n" + 
 				"    {\n" + 
-				"        res += i;\n" + 
+				"        return 0;\n" + 
 				"    }\n" + 
-				"\n" + 
-				"    return res;   \n" + 
+				"    for (int i = 0; i < strlen(Y); i++)\n" + 
+				"    {\n" + 
+				"        if (*X > *(Y + i))\n" + 
+				"        {\n" + 
+				"            // printf(\"%c %c\\n\", *X, *(Y + i));\n" + 
+				"            count++;\n" + 
+				"        }\n" + 
+				"    }\n" + 
+				"    X = X + 1;\n" + 
+				"    return count + S(X, Y);\n" + 
 				"}\n" + 
 				"\n" + 
-				"int CheckVertical(int (*matrix)[15], int n)\n" + 
+				"int W(char X[])\n" + 
 				"{\n" + 
-				"    int counter = 0;\n" + 
-				"    int result = 0;\n" + 
-				"    int helper = 0;\n" + 
-				"    for (int col = 0; col < n; col++)\n" + 
+				"    int count = 0;\n" + 
+				"    if (strlen(X) == 1)\n" + 
 				"    {\n" + 
-				"        for (int row = 0; row < n; row++)\n" + 
-				"        {\n" + 
-				"            if (matrix[row][col] == 1)\n" + 
-				"            {\n" + 
-				"                counter++;\n" + 
-				"            }\n" + 
-				"        }\n" + 
-				"\n" + 
-				"        result += CalculateAttacks(counter);\n" + 
-				"        counter = 0;\n" + 
+				"        return 0;\n" + 
 				"    }\n" + 
-				"\n" + 
-				"    return result;\n" + 
+				"    for (int i = 1; i < strlen(X); i++)\n" + 
+				"    {\n" + 
+				"        if (*X > *(X + i))\n" + 
+				"        {\n" + 
+				"            // printf(\"%c %c\\n\", *X, *(X + i));\n" + 
+				"            count++;\n" + 
+				"        }\n" + 
+				"    }\n" + 
+				"    X = X + 1;\n" + 
+				"    return count + W(X);\n" + 
 				"}\n" + 
-				"\n" + 
-				"int CheckHorizontal(int (*matrix)[15], int n)\n" + 
-				"{\n" + 
-				"    int counter = 0;\n" + 
-				"    int result = 0;\n" + 
-				"    int helper = 0;\n" + 
-				"    for (int row = 0; row < n; row++)\n" + 
-				"    {\n" + 
-				"        for (int col = 0; col < n; col++)\n" + 
-				"        {\n" + 
-				"            if (matrix[row][col] == 1)\n" + 
-				"            {\n" + 
-				"                counter++;\n" + 
-				"            }\n" + 
-				"        }\n" + 
-				"\n" + 
-				"        result += CalculateAttacks(counter);\n" + 
-				"        counter = 0;\n" + 
-				"    }\n" + 
-				"\n" + 
-				"    return result;\n" + 
-				"}\n" + 
-				"\n" + 
-				"int CheckLefthToRight(int (*matrix)[15], int n)\n" + 
-				"{\n" + 
-				"    int counter = 0;\n" + 
-				"    int result = 0;\n" + 
-				"    int helper = 0;\n" + 
-				"    for (int i = 0; i < n; i++)\n" + 
-				"    {\n" + 
-				"        helper = 0;\n" + 
-				"        for (int col = i; col < n; col++)\n" + 
-				"        {\n" + 
-				"            if (matrix[helper][col] == 1)\n" + 
-				"            {\n" + 
-				"                counter++;\n" + 
-				"            }\n" + 
-				"            helper++;\n" + 
-				"        }\n" + 
-				"\n" + 
-				"        result += CalculateAttacks(counter);\n" + 
-				"        counter = 0;\n" + 
-				"    }\n" + 
-				"\n" + 
-				"    for (int i = 1; i < n; i++)\n" + 
-				"    {\n" + 
-				"        helper = 0;\n" + 
-				"        for (int row = i; row < n; row++)\n" + 
-				"        {\n" + 
-				"            if (matrix[row][helper] == 1)\n" + 
-				"            {\n" + 
-				"                counter++;\n" + 
-				"            }\n" + 
-				"            helper++;\n" + 
-				"        }\n" + 
-				"\n" + 
-				"        result += CalculateAttacks(counter);\n" + 
-				"        counter = 0;\n" + 
-				"    }\n" + 
-				"    \n" + 
-				"    return result;\n" + 
-				"}\n" + 
-				"\n" + 
-				"int CheckRigthToLefth(int (*matrix)[15], int n)\n" + 
-				"{\n" + 
-				"    int counter = 0;\n" + 
-				"    int result = 0;\n" + 
-				"    int helper = 0;\n" + 
-				"    for (int i = n; i >= 0; i--)\n" + 
-				"    {\n" + 
-				"        helper = 0;\n" + 
-				"        for (int col = i; col >= 0; col--)\n" + 
-				"        {\n" + 
-				"            if (matrix[helper][col] == 1)\n" + 
-				"            {\n" + 
-				"                counter++;\n" + 
-				"            }\n" + 
-				"            helper++;\n" + 
-				"        }\n" + 
-				"\n" + 
-				"        result += CalculateAttacks(counter);\n" + 
-				"        counter = 0;\n" + 
-				"    }\n" + 
-				"\n" + 
-				"    for (int i = 1; i < n; i++)\n" + 
-				"    {\n" + 
-				"        helper = n-1;\n" + 
-				"        for (int row = i; row < n; row++)\n" + 
-				"        {\n" + 
-				"            if (matrix[row][helper] == 1)\n" + 
-				"            {\n" + 
-				"                counter++;\n" + 
-				"            }\n" + 
-				"            helper--;\n" + 
-				"        }\n" + 
-				"\n" + 
-				"        result += CalculateAttacks(counter);\n" + 
-				"        counter = 0;\n" + 
-				"    }\n" + 
-				"    \n" + 
-				"    return result;\n" + 
-				"}\n" + 
-				"\n" + 
-				"\n" + 
 				"int main()\n" + 
 				"{\n" + 
-				"    int n;\n" + 
-				"    scanf(\"%d\",&n);\n" + 
-				"    int Matrix[n][15];\n" + 
-				"    char input[n*2];\n" + 
-				"\n" + 
-				"    int res = 0;\n" + 
-				"\n" + 
-				"    for (int i = 0; i < n; i++)\n" + 
+				"    // input\n" + 
+				"    int lengthOfInput = 0;\n" + 
+				"    scanf(\"%d\\n\", &lengthOfInput);\n" + 
+				"    char X[lengthOfInput / 2];\n" + 
+				"    for (int i = 0; i < lengthOfInput / 2; i++)\n" + 
 				"    {\n" + 
-				"        getchar();\n" + 
-				"        fgets(input, n*2, stdin);\n" + 
-				"        GetSequence(input,Matrix[i]);\n" + 
+				"        scanf(\"%c \", &X[i]);\n" + 
 				"    }\n" + 
+				"    X[lengthOfInput / 2] = '\\0';\n" + 
 				"\n" + 
-				"    res += CheckLefthToRight(Matrix,n);\n" + 
-				"    res += CheckRigthToLefth(Matrix,n);\n" + 
-				"    res += CheckHorizontal(Matrix,n);\n" + 
-				"    res += CheckVertical(Matrix,n);\n" + 
-				"\n" + 
-				"    if(res == 0)\n" + 
+				"    // printArray(X);\n" + 
+				"    char Y[lengthOfInput - (lengthOfInput / 2)];\n" + 
+				"    for (int i = 0; i < lengthOfInput - (lengthOfInput / 2); i++)\n" + 
 				"    {\n" + 
-				"        printf(\"There is no attack.\\n\");\n" + 
+				"        scanf(\" %c\", &Y[i]);\n" + 
 				"    }\n" + 
-				"    else\n" + 
-				"    {\n" + 
-				"        printf(\"%d\",res);\n" + 
-				"    }\n" + 
-				"\n" + 
-				"    return 0;\n" + 
+				"    Y[lengthOfInput - (lengthOfInput / 2)] = '\\0';\n" + 
+				"    // printArray(Y);\n" + 
+				"    // printf(\"\\n\");\n" + 
+				"    // printf(\"%d\\n\", W(X));\n" + 
+				"    // printf(\"%d\\n\", W(Y));\n" + 
+				"    printf(\"haha\");\n" + 
+				"    printf(\"%d\", W(X) + W(Y) + S(X, Y));\n" + 
 				"}\n");
 		List<Integer> lineNumbersOfResult = dynamciSlice.execute();
 		for(Integer lineNumber:lineNumbersOfResult) {
