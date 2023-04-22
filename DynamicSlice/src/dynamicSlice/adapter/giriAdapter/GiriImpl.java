@@ -47,24 +47,31 @@ public class GiriImpl implements Giri{
 
 	public void makeAndDownloadSlicLocFileIntoWorkDirectory(String workDirectoryInContainer, String workDirectory
 			,String cFileNameWithoutExtension,FileRepository fileHandler) {
-		GiriMakeCommandRunner make = new GiriMakeCommandRunner(workDirectoryInContainer,this.containerName);
-		make.start();
+		this.makeCommandWithTimeLimit(workDirectoryInContainer, 8000);
+		this.downloadSlicLocFileIntoWorkDirectory(workDirectoryInContainer, workDirectory, cFileNameWithoutExtension);
+		boolean fileExist = fileHandler.checkIfSliceLocFileExist(workDirectory, cFileNameWithoutExtension);
+		if(!fileExist) {
+			this.makeCommandWithTimeLimit(workDirectoryInContainer, 8000);
+		}
+		this.downloadSlicLocFileIntoWorkDirectory(workDirectoryInContainer, workDirectory, cFileNameWithoutExtension);
+		fileExist = fileHandler.checkIfSliceLocFileExist(workDirectory, cFileNameWithoutExtension);
+		if(fileExist)System.out.println("Dynamic Slicing Succeeded!");
+		else System.out.println("Dynamic Slicing Failed! ");
+	}
+	
+	private void makeCommandWithTimeLimit(String workDirectoryInContainer,int timeLimitByMillisecond) {
+		GiriMakeCommandRunner makeRunner = new GiriMakeCommandRunner(workDirectoryInContainer,this.containerName);
+		makeRunner.start();
 		try {
-			for(int i=0;i<18;i++) {
-				make.join(500);
-				this.downloadSlicLocFileIntoWorkDirectory(workDirectoryInContainer, workDirectory, cFileNameWithoutExtension);
-				boolean fileExist = fileHandler.checkIfSliceLocFileExist(workDirectory, cFileNameWithoutExtension);
-				if(fileExist) break;
+			makeRunner.join(timeLimitByMillisecond);
+			if(makeRunner.isAlive()) {
+				makeRunner.interrupt();
 			}
-			if(make.isAlive()) {
-				make.interrupt();
-			}
-
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
 	}
+        
 	public void downloadSlicLocFileIntoWorkDirectory(String workDirectoryInContainer, String workDirectory,String cFileNameWithoutExtension) {
 		String sliceLocFileName = cFileNameWithoutExtension + ".slice.loc";
 		this.downloadFileFromContainer(this.containerName, sliceLocFileName, workDirectoryInContainer, workDirectory);
