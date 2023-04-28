@@ -1,6 +1,6 @@
 package dynamicSlice.adapter.giriAdapter;
 
-import java.io.File;
+
 import java.io.IOException;
 
 
@@ -36,30 +36,31 @@ public class GiriImpl implements Giri{
 				process.waitFor();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+			}  finally {
+				process.destroy();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		}finally {
-			process.destroy();
 		}
 		
 	}
-
+	//在測資輸入長度較長的情況下 會有.slice.loc檔案等了很久還是抓不下來的情況(如果直接手動進container 下make指令還是可以成功)
+	//如果有這種情況 就下第二次make指令就可以成功得到.slice.loc檔案(裡面是動態切片結果的行號)
 	public void makeAndDownloadSlicLocFileIntoWorkDirectory(String workDirectoryInContainer, String workDirectory
 			,String cFileNameWithoutExtension,FileRepository fileHandler) {
-		this.makeCommandWithTimeLimit(workDirectoryInContainer, 8000);
+		this.doMakeCommandWithTimeLimit(workDirectoryInContainer, 10000);
 		this.downloadSlicLocFileIntoWorkDirectory(workDirectoryInContainer, workDirectory, cFileNameWithoutExtension);
 		boolean fileExist = fileHandler.checkIfSliceLocFileExist(workDirectory, cFileNameWithoutExtension);
 		if(!fileExist) {
-			this.makeCommandWithTimeLimit(workDirectoryInContainer, 8000);
+			this.doMakeCommandWithTimeLimit(workDirectoryInContainer, 10000);
+			this.downloadSlicLocFileIntoWorkDirectory(workDirectoryInContainer, workDirectory, cFileNameWithoutExtension);
+			fileExist = fileHandler.checkIfSliceLocFileExist(workDirectory, cFileNameWithoutExtension);
 		}
-		this.downloadSlicLocFileIntoWorkDirectory(workDirectoryInContainer, workDirectory, cFileNameWithoutExtension);
-		fileExist = fileHandler.checkIfSliceLocFileExist(workDirectory, cFileNameWithoutExtension);
 		if(fileExist)System.out.println("Dynamic Slicing Succeeded!");
 		else System.out.println("Dynamic Slicing Failed! ");
 	}
 	
-	private void makeCommandWithTimeLimit(String workDirectoryInContainer,int timeLimitByMillisecond) {
+	private void doMakeCommandWithTimeLimit(String workDirectoryInContainer,int timeLimitByMillisecond) {
 		GiriMakeCommandRunner makeRunner = new GiriMakeCommandRunner(workDirectoryInContainer,this.containerName);
 		makeRunner.start();
 		try {
@@ -86,11 +87,11 @@ public class GiriImpl implements Giri{
 				process.waitFor();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+			} finally {
+				process.destroy();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		}finally {
-			process.destroy();
 		}
 		
 	}
@@ -99,20 +100,13 @@ public class GiriImpl implements Giri{
 		String dir = "/giri/test/UnitTests/ST";
 		String filePath = "";
 		giri.setContainerName("giriContainer");
-		String dir2 = "/giri/test/UnitTests/test1/";
-		String file = "extlibcalls.c";
+
 		
 //		giri.createWorkDirectoryInContainer(dir);
 //		giri.deleteWorkDirectoryInContainer(dir);
-		
-		boolean fileExists = giri.checkIfFileExists(dir2,"/home/aaron/",file);
-		System.out.println(fileExists);
+
 	}
 	
-	private boolean checkIfFileExists(String workDirectoryInContainer,String workDirectory,String file) {
-		this.downloadFileFromContainer(this.containerName, file, workDirectoryInContainer, workDirectory);
-		return new File(workDirectory + file ).exists();
-	}
 	
 
 	public void createWorkDirectoryInContainer(String workDirectoryInContainer) {
@@ -124,11 +118,11 @@ public class GiriImpl implements Giri{
 				process.waitFor();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+			}  finally {
+				process.destroy();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		}finally {
-			process.destroy();
 		}
 	}
 
@@ -142,11 +136,11 @@ public class GiriImpl implements Giri{
 				process.waitFor();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+			}  finally {
+				process.destroy();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			process.destroy();
 		}
 		
 	}

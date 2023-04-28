@@ -1,14 +1,12 @@
 package dynamicSlice.usecase.service;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
-import java.util.concurrent.Callable;
 
-import dynamicSlice.adapter.fileHandler.FileUtil;
-import dynamicSlice.adapter.giriAdapter.GiriImpl;
+
+
 import dynamicSlice.entity.CprogramUsedArgvAsInput;
 import dynamicSlice.usecase.in.DynamicSliceInput;
 import dynamicSlice.usecase.in.DynamicSliceOutput;
@@ -63,7 +61,6 @@ public class GiriDynamciSliceService implements DynamicSliceUseCase{
 
 		for(Integer lineNumberOfTarget:lineNumberOfTargetStatement) {
 			fileHandler.writeLocTxtFile(this.workDirectory,this.cPrgramDTO.getcFileName(),lineNumberOfTarget);
-
 			giri.deleteWorkDirectoryInContainer(this.workDirectoryInContainer);
 			giri.createWorkDirectoryInContainer(this.workDirectoryInContainer);
 			giri.copyMakeFileIntoContainer(this.workDirectory, this.workDirectoryInContainer);
@@ -73,17 +70,28 @@ public class GiriDynamciSliceService implements DynamicSliceUseCase{
 			giri.makeAndDownloadSlicLocFileIntoWorkDirectory(this.workDirectoryInContainer, this.workDirectory, this.cPrgramDTO.getcFileNameWithoutExtension(),
 					fileHandler);
 			List<Integer> lineNumbersOfDynamicSlice = fileHandler.readSliceLocFile(this.workDirectory, this.cPrgramDTO.getcFileNameWithoutExtension());
+			if(this.isDynamicSlicingFailed(lineNumbersOfDynamicSlice.isEmpty())) {
+				/*
+				 * 若一筆測資中的其中一個output statement所得到的切片失敗 (至少會有output statement那一行)
+				 * 那應該判定整筆測資得到的切片都失敗 以避免誤導學生 所以把切片集合清空
+				 */
+				lineNumbersSet.clear();
+				break;
+			}
 			lineNumbersSet.addAll(lineNumbersOfDynamicSlice);
 		}
 
 		fileHandler.deleteWorkDirectory(new File(this.workDirectory));
 		this.linNumbersOfSliceResults = new ArrayList<Integer>(lineNumbersSet);
-		
 		DynamicSliceOutput output = new DynamicSliceOutput();
 		output.setLineNumbersOfDynamicSlicing(this.linNumbersOfSliceResults);
 		return output;
 	}
 	
+	private boolean isDynamicSlicingFailed(boolean isLineNumbersOfDynamicSliceEmpty) {
+		return isLineNumbersOfDynamicSliceEmpty;
+	}
+
 	private void setContainerName(String containerName) {
 		this.containerName = containerName;
 	}
@@ -97,9 +105,6 @@ public class GiriDynamciSliceService implements DynamicSliceUseCase{
 				+ this.cPrgramDTO.getQuetionID() + "/";
 	}
 
-	private void setCProgramInfoUsedArgvAsInput(CprogramUsedArgvAsInput cPrgramDTO) {
-		this.cPrgramDTO = cPrgramDTO;
-	}
 
 	public List<Integer> getDynamicResult() {
 		return this.linNumbersOfSliceResults;

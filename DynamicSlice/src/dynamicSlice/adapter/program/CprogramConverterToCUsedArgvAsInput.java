@@ -15,7 +15,7 @@ import dynamicSlice.adapter.service.CCoverageService;
 import dynamicSlice.adapter.service.CCoverageServiceBuilder;
 import dynamicSlice.entity.CprogramUsedArgvAsInput;
 
-public class CprogramConverterUseArgvAsInput implements CprogramConverter {
+public class CprogramConverterToCUsedArgvAsInput implements CprogramConverter {
 	
 	CprogramUsedArgvAsInput convertedProgram;
 	
@@ -112,7 +112,7 @@ public class CprogramConverterUseArgvAsInput implements CprogramConverter {
             "    convertSpecialCharacter110598067(inputData,\"*BaS403\",'\\\\');\n" + 
             "}\n";
 	
-	public CprogramConverterUseArgvAsInput(StudentProgramDTO studentProgramDTO) {
+	public CprogramConverterToCUsedArgvAsInput(StudentProgramDTO studentProgramDTO) {
 		this.studentProgramDTO = studentProgramDTO;
 		this.programContent = studentProgramDTO.getcProgramContent();
 		this.removeComments();
@@ -146,6 +146,7 @@ public class CprogramConverterUseArgvAsInput implements CprogramConverter {
         List<Integer> lineNumbers = startIndexes.stream()
         		.filter(x-> !isInsideStringDoubleQuotes(x))
         		.map(x->countLineNumberInProgram(x))
+        		//不會被這次測資cover到的output statement  不需要給giri做使用 所以在這裡過濾掉
         		.filter(lineNumber -> !lineNumbersOfUncoveredStatement.contains(lineNumber))
         		.collect(Collectors.toList());
         return lineNumbers;
