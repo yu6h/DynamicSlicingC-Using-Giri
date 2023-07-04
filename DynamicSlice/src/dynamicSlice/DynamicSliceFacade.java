@@ -8,8 +8,8 @@ import dynamicSlice.adapter.giriAdapter.GiriImpl;
 import dynamicSlice.adapter.program.CprogramConverter;
 import dynamicSlice.adapter.program.CprogramConverterToCUsedArgvAsInput;
 import dynamicSlice.entity.CprogramUsedArgvAsInput;
-import dynamicSlice.usecase.in.DynamicSliceInput;
-import dynamicSlice.usecase.in.DynamicSliceOutput;
+import dynamicSlice.usecase.in.DynamicSliceUseCaseInput;
+import dynamicSlice.usecase.in.DynamicSliceUseCaseOutput;
 import dynamicSlice.usecase.in.DynamicSliceUseCase;
 import dynamicSlice.usecase.service.GiriDynamciSliceService;
 
@@ -38,17 +38,25 @@ public class DynamicSliceFacade {
 		this.studentProgramDTO.setcProgramContent(programContent);
 	}
 	
-	public List<Integer> execute() {
+	public DynamicSliceResult execute() {
 		CprogramConverter converter = new CprogramConverterToCUsedArgvAsInput(studentProgramDTO);
 		converter.convert();
 		CprogramUsedArgvAsInput formattedCProgramDTO = converter.generateCprogramExpertUsedArgvAsInput();
+		List<Integer> lineNumbersOfCoveredOutputStatement = formattedCProgramDTO.getLineNumbersOfOutputStatement();
+		
 		DynamicSliceUseCase dynamicSliceservice = new GiriDynamciSliceService(new FileUtil(),new GiriImpl());
-		DynamicSliceInput input = new DynamicSliceInput();
+		DynamicSliceUseCaseInput input = new DynamicSliceUseCaseInput();
 		input.setcProgram(formattedCProgramDTO);
-		DynamicSliceOutput output = dynamicSliceservice.execute(input);
-		List<Integer> lineNumbersOfResult = output.getLineNumbersOfDynamicSlicing();
-		lineNumbersOfResult = converter.convertChangedLineNumbersToOriginalLineNumbers(lineNumbersOfResult);
-		return lineNumbersOfResult;
+		DynamicSliceUseCaseOutput output = dynamicSliceservice.execute(input);
+		List<Integer> lineNumbersOfDynamicSlice = output.getLineNumbersOfDynamicSlicing();
+		
+		lineNumbersOfDynamicSlice = converter.convertChangedLineNumbersToOriginalLineNumbers(lineNumbersOfDynamicSlice);
+		lineNumbersOfCoveredOutputStatement = converter.convertChangedLineNumbersToOriginalLineNumbers(lineNumbersOfCoveredOutputStatement);
+		
+		DynamicSliceResult result = new DynamicSliceResult();
+		result.setLineNumbersOfCoveredOutputStatement(lineNumbersOfCoveredOutputStatement);
+		result.setLineNumbersOfDynamicSlice(lineNumbersOfDynamicSlice);
+		return result;
 	}
 
 }

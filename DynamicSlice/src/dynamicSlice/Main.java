@@ -96,10 +96,10 @@ public class Main {
 				"    printf(\"haha\");\n" + 
 				"    printf(\"%d\", W(X) + W(Y) + S(X, Y));\n" + 
 				"}\n");
-		List<Integer> lineNumbersOfResult = dynamciSlice.execute();
-		for(Integer lineNumber:lineNumbersOfResult) {
-			System.out.println(lineNumber);
-		}
+//		List<Integer> lineNumbersOfResult = dynamciSlice.execute();
+//		for(Integer lineNumber:lineNumbersOfResult) {
+//			System.out.println(lineNumber);
+//		}
 
 	}
 
