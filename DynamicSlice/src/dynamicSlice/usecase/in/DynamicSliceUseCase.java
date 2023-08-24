@@ -2,6 +2,6 @@ package dynamicSlice.usecase.in;
 
 public interface DynamicSliceUseCase {
 
-	public DynamicSliceOutput execute(DynamicSliceInput input);
+	public DynamicSliceUseCaseOutput execute(DynamicSliceUseCaseInput input);
 	
 }

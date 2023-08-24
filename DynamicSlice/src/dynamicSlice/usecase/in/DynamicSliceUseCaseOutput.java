@@ -2,7 +2,7 @@ package dynamicSlice.usecase.in;
 
 import java.util.List;
 
-public class DynamicSliceOutput {
+public class DynamicSliceUseCaseOutput {
 	
 	private List<Integer> lineNumbersOfDynamicSlicing;
 

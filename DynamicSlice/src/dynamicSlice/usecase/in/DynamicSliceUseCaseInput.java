@@ -2,7 +2,7 @@ package dynamicSlice.usecase.in;
 
 import dynamicSlice.entity.CprogramUsedArgvAsInput;
 
-public class DynamicSliceInput {
+public class DynamicSliceUseCaseInput {
 	
 	private CprogramUsedArgvAsInput cProgram;
 

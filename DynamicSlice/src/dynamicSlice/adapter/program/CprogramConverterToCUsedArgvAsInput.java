@@ -143,13 +143,13 @@ public class CprogramConverterToCUsedArgvAsInput implements CprogramConverter {
     	cCoverageServiceservice.analyze();
     	List<Integer> lineNumbersOfUncoveredStatement = cCoverageServiceservice.getLineNumbersOfUncoveredStatement();
         List<Integer> startIndexes = getStartIndexes(this.programContent,"(?<!\\w)(?:printf|puts|putc|putchar|fputs)[\\s]*\\(");
-        List<Integer> lineNumbers = startIndexes.stream()
+        List<Integer> lineNumbersOfCoveredOutputStatement = startIndexes.stream()
         		.filter(x-> !isInsideStringDoubleQuotes(x))
         		.map(x->countLineNumberInProgram(x))
         		//不會被這次測資cover到的output statement  不需要給giri做使用 所以在這裡過濾掉
         		.filter(lineNumber -> !lineNumbersOfUncoveredStatement.contains(lineNumber))
         		.collect(Collectors.toList());
-        return lineNumbers;
+        return lineNumbersOfCoveredOutputStatement;
     }
 
 	private String generateCFileNameWithoutExtension(String cFileName) {
@@ -176,26 +176,19 @@ public class CprogramConverterToCUsedArgvAsInput implements CprogramConverter {
     }
 
 	public void convert(){
-        insertVariableForSscanf("int USED110598067;\n");
-        insertVariableForSscanf("char* INPUT110598067;\n");
-        insertHeader("#include <stdlib.h>\n");
-        insertHeader("#include <stdio.h>\n");
-        insertHeader("#include <string.h>\n");
-        insertHeader("#include <stdarg.h>\n");
-        int beginningOfMain = findBeginningOfMain();
-        int lineNumber = countLineNumberInProgram( beginningOfMain);
-        int indexToInsert = beginningOfMain;
-        if(hasAnyStatementBeforeMainFunction(beginningOfMain)){
-            lineNumber++;
-            this.insertNewLineAndRecordInStack(indexToInsert,lineNumber);
-            indexToInsert = findBeginningOfMain();
-        }
-        this.insertStatementsAndRecordInStack(this.functionOfConvertInputData,indexToInsert,lineNumber);
-        this.insertStatementsAndRecordInStack(this.functionOfConvertSpecialCharacter,indexToInsert,lineNumber);
-        this.insertStatementsAndRecordInStack(this.functionOfReadScanf,indexToInsert,lineNumber);
-        this.insertStatementsAndRecordInStack(this.functionOfReadGetchar,indexToInsert,lineNumber);
-        this.insertStatementsAndRecordInStack(this.functionOfReadGets,indexToInsert,lineNumber);
-        this.insertStatementsAndRecordInStack(this.functionOfReadFgets,indexToInsert,lineNumber);
+        this.insertFunctionAtBeginning(this.functionOfConvertInputData);
+        this.insertFunctionAtBeginning(this.functionOfConvertSpecialCharacter);
+        this.insertFunctionAtBeginning(this.functionOfReadScanf);
+        this.insertFunctionAtBeginning(this.functionOfReadGetchar);
+        this.insertFunctionAtBeginning(this.functionOfReadGets);
+        this.insertFunctionAtBeginning(this.functionOfReadFgets);
+        this.insertVariableForSscanfAtBeginging("int USED110598067;\n");
+        this.insertVariableForSscanfAtBeginging("char* INPUT110598067;\n");
+        this.insertHeaderAtBeginning("#include <stdlib.h>\n");
+        this.insertHeaderAtBeginning("#include <stdio.h>\n");
+        this.insertHeaderAtBeginning("#include <string.h>\n");
+        this.insertHeaderAtBeginning("#include <stdarg.h>\n");
+
         this.convertMain();
 
 
@@ -207,8 +200,9 @@ public class CprogramConverterToCUsedArgvAsInput implements CprogramConverter {
     }
     public List<Integer> convertChangedLineNumbersToOriginalLineNumbers(List<Integer> list) {
         List<Integer> result = list;
-        while (!this.stackOfLineChanges.isEmpty()){
-            InsertedLines insertedLines = this.stackOfLineChanges.pop();
+        ArrayDeque<InsertedLines> copyOfStack = this.stackOfLineChanges.clone();
+        while (!copyOfStack.isEmpty()){
+            InsertedLines insertedLines = copyOfStack.pop();
             int lineNumberWhereInserted = insertedLines.getLineNumbersWhereInserted();
             int numbersOfLine = insertedLines.getNumbersOfLinesInserted();
             result = result.stream().filter(x -> ! (x>=lineNumberWhereInserted && x< lineNumberWhereInserted +numbersOfLine))
@@ -216,7 +210,9 @@ public class CprogramConverterToCUsedArgvAsInput implements CprogramConverter {
         }
         return result;
     }
-	
+    private void insertFunctionAtBeginning(String function){
+        this.insertAtBeginningOfProgram(function);
+    }
     private void insertStatementsForInputProcessing(int indexOfLeftCurlyBracketOfMain) {
         String str = this.programContent.substring(indexOfLeftCurlyBracketOfMain + 1);
         String strAfterLeftCurlyBracketOfMain = str.substring(0,str.indexOf('\n'));
@@ -497,11 +493,11 @@ public class CprogramConverterToCUsedArgvAsInput implements CprogramConverter {
         return indexOfLeftCurlyBracketsOfMain;
     }
 
-    private void insertHeader(String headerStatement) {
+    private void insertHeaderAtBeginning(String headerStatement) {
         insertAtBeginningOfProgram(headerStatement);
     }
     
-    private void insertVariableForSscanf(String statement) {
+    private void insertVariableForSscanfAtBeginging(String statement) {
         insertAtBeginningOfProgram(statement);
     }
     
@@ -511,35 +507,10 @@ public class CprogramConverterToCUsedArgvAsInput implements CprogramConverter {
         return lineNumber;
     }
     
-    private boolean hasAnyStatementBeforeMainFunction(int beginningOfMain) {
-        String stringBeforeMain = this.programContent.substring(0,beginningOfMain);
-        int index = stringBeforeMain.lastIndexOf("\n");
-        if(index == -1) index =0;
-        return checkIfAnyStatementExists(stringBeforeMain.substring(index));
-    }
+
     
     private boolean checkIfAnyStatementExists(String string) {
         return  !string.trim().isEmpty();
-    }
-    
-    private int findBeginningOfMain() {
-        Pattern pattern = Pattern.compile("(?<!\\w)(?:void|int)[\\s]*(?<!\\w)main[\\s]*\\(");
-        Matcher matcher = pattern.matcher(this.programContent);
-        int beginningOfMain = 0;
-        while(matcher.find()){
-            beginningOfMain = matcher.start();
-            if(!isInsideStringDoubleQuotes(beginningOfMain)){
-                break;
-            }
-        }
-        return beginningOfMain;
-    }
-    
-    private void insertNewLineAndRecordInStack(int indexToInsert, int lineNumber) {
-        StringBuilder stringBuilder = new StringBuilder(this.programContent);
-        stringBuilder.insert(indexToInsert,"\n");
-        this.programContent = stringBuilder.toString();
-        this.recordInsertedNewLinesInStack(lineNumber,1);
     }
     
     private boolean isInsideStringDoubleQuotes(int indexAtProgram){
