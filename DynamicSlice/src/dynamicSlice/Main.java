@@ -1,14 +1,4 @@
 package dynamicSlice;
-import java.util.List;
-
-import dynamicSlice.DTO.StudentProgramDTO;
-import dynamicSlice.adapter.fileHandler.FileUtil;
-import dynamicSlice.adapter.giriAdapter.GiriImpl;
-import dynamicSlice.adapter.program.CprogramConverter;
-import dynamicSlice.adapter.program.CprogramConverterToCUsedArgvAsInput;
-import dynamicSlice.entity.CprogramUsedArgvAsInput;
-import dynamicSlice.usecase.in.DynamicSliceUseCase;
-import dynamicSlice.usecase.service.GiriDynamciSliceService;
 
 public class Main {
 

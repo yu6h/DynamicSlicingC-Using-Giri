@@ -4,7 +4,7 @@ package dynamicSlice.adapter.giriAdapter;
 import java.io.IOException;
 
 
-import dynamicSlice.usecase.in.Giri;
+import dynamicSlice.usecase.out.Giri;
 import dynamicSlice.usecase.out.FileRepository;
 
 public class GiriImpl implements Giri{
@@ -95,19 +95,7 @@ public class GiriImpl implements Giri{
 		}
 		
 	}
-	public static void main(String[] args) {
-		GiriImpl giri = new GiriImpl();
-		String dir = "/giri/test/UnitTests/ST";
-		String filePath = "";
-		giri.setContainerName("giriContainer");
 
-		
-//		giri.createWorkDirectoryInContainer(dir);
-//		giri.deleteWorkDirectoryInContainer(dir);
-
-	}
-	
-	
 
 	public void createWorkDirectoryInContainer(String workDirectoryInContainer) {
 		Process process = null;

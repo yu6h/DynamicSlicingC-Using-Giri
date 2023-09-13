@@ -6,7 +6,7 @@ public class DynamicSliceUseCaseOutput {
 	
 	private List<Integer> lineNumbersOfDynamicSlicing;
 
-	public List<Integer> getLineNumbersOfDynamicSlicing() {
+	public List<Integer> getLineNumbersOfDynamicSlicingInConvertedProgram() {
 		return lineNumbersOfDynamicSlicing;
 	}
 
