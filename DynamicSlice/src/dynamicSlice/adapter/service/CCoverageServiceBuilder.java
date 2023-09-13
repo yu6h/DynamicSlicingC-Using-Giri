@@ -3,9 +3,6 @@ package dynamicSlice.adapter.service;
 import dynamicSlice.adapter.commandTool.factory.CommandToolFactory;
 import dynamicSlice.adapter.fileHandler.FileHandlerTool;
 
-import java.util.List;
-import java.util.Optional;
-
 
 public class CCoverageServiceBuilder {
     private String cFileName;

@@ -124,6 +124,7 @@ public class ProgramConversionAdapter {
                 .buildStudentID(this.useCaseInput.getStudentID())
     	.buildQuetionID(this.useCaseInput.getQuetionID())
     	.buildCFileName(this.useCaseInput.getcFileName())
+    	.buildCFileNameWithOutExtension(this.generateCFileNameWithoutExtension(this.useCaseInput.getcFileName()))
     	.buildInputDataAtCMD(this.useCaseInput.getInputData())
     	.buildProgramContent(this.useCaseInput.getProgramContent())
     	.buildFileHandlerTool(new FileUtil())
