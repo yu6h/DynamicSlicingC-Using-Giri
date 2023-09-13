@@ -7,4 +7,5 @@ public interface FileHandlerTool {
 	void createWorkDirectory(File workDirectory);
 	String readFile(String workDirectory,String fileName);
 	void writeFile(String workDirectory,String fileName,String content);
+	void renameFile(String workDirectory,String originalFileName, String newFileName);
 }

@@ -120,5 +120,10 @@ public class FileUtil implements FileRepository, FileHandlerTool{
 	public void deleteSliceLocFile(String workDirectory, String cFileNameWithoutExtension) {
 		new File(workDirectory + cFileNameWithoutExtension + ".slice.loc").delete();		
 	}
+
+	@Override
+	public void renameFile(String workDirectory,String originalFileName, String newFileName) {
+		new File(workDirectory+originalFileName).renameTo(new File(workDirectory+newFileName));
+	}
 	
 }

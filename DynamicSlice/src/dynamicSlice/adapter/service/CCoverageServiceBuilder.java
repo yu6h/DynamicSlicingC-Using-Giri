@@ -45,5 +45,10 @@ public class CCoverageServiceBuilder {
     public CCoverageService build() {
         return this.cCoverageService;
     }
+
+	public CCoverageServiceBuilder buildCFileNameWithOutExtension(String cFileNameWithoutExtension) {
+		this.cCoverageService.setCFileNameWithOutExtension(cFileNameWithoutExtension);
+		return this;
+	}
 	
 }

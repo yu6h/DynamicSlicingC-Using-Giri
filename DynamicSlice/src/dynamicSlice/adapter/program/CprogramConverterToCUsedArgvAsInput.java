@@ -135,6 +135,7 @@ public class CprogramConverterToCUsedArgvAsInput implements CprogramConverter {
     	CCoverageService cCoverageServiceservice= new CCoverageServiceBuilder().buildStudentID(this.convertedProgram.getStudentID())
     	.buildQuetionID(this.convertedProgram.getQuetionID())
     	.buildCFileName(this.convertedProgram.getcFileName())
+    	.buildCFileNameWithOutExtension(this.generateCFileNameWithoutExtension(this.studentProgramDTO.getcFileName()))
     	.buildInputDataAtCMD(this.convertedProgram.getInputData())
     	.buildProgramContent(this.convertedProgram.getProgramContent())
     	.buildFileHandlerTool(new FileUtil())

@@ -33,6 +33,8 @@ public class CCoverageService {
     private CommandToolFactory factory;
 
 	private FileHandlerTool fileTool;
+
+	private String cFileNameWithoutExtension;
     
     public CCoverageService() {
     }
@@ -49,6 +51,8 @@ public class CCoverageService {
     	this.fileTool.writeFile(this.workdirectory, this.cFileName, this.programContent);
     	myCompiler.compile(this.cFileName);
     	myCompiler.run(this.cFileName, this.inputDataAtCMD);
+    	this.fileTool.renameFile(this.workdirectory,"exe-"+this.cFileNameWithoutExtension+".gcda", this.cFileNameWithoutExtension+".gcda");
+    	this.fileTool.renameFile(this.workdirectory,"exe-"+this.cFileNameWithoutExtension+".gcno", this.cFileNameWithoutExtension+".gcno");
     	GcovTool gcovTool = factory.createGcovTool(this.workdirectory);
     	gcovTool.runGcovCommand(this.cFileName);
     	String gcovFileContent = this.fileTool.readFile(this.workdirectory , this.cFileName+".gcov");
@@ -143,6 +147,10 @@ public class CCoverageService {
 	
 	private void initializeWorkdirectory(String workdirectory) {
 		this.workdirectory = workdirectory;
+	}
+
+	public void setCFileNameWithOutExtension(String cFileNameWithoutExtension) {
+		this.cFileNameWithoutExtension = cFileNameWithoutExtension;
 	}
 
 }
