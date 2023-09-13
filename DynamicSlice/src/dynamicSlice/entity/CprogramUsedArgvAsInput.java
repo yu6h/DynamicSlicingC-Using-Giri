@@ -14,6 +14,17 @@ public class CprogramUsedArgvAsInput {
 	private String inputData;
 	private String programContent;
 	private List<Integer> lineNumbersOfOutputStatement;
+
+	public CprogramUsedArgvAsInput(String cFileName, String cFileNameWithoutExtension, int quetionID, String studentID, String inputData, String programContent, List<Integer> lineNumbersOfOutputStatement) {
+		this.cFileName = cFileName;
+		this.cFileNameWithoutExtension = cFileNameWithoutExtension;
+		this.quetionID = quetionID;
+		this.studentID = studentID;
+		this.inputData = inputData;
+		this.programContent = programContent;
+		this.lineNumbersOfOutputStatement = lineNumbersOfOutputStatement;
+	}
+
 	public String getcFileName() {
 		return cFileName;
 	}

@@ -8,16 +8,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import dynamicSlice.DTO.StudentProgramDTO;
+import dynamicSlice.adapter.program.DTO.StudentProgramDTO;
 import dynamicSlice.adapter.commandTool.factory.CommandToolFactoryUbuntuImpl;
 import dynamicSlice.adapter.fileHandler.FileUtil;
 import dynamicSlice.adapter.service.CCoverageService;
 import dynamicSlice.adapter.service.CCoverageServiceBuilder;
-import dynamicSlice.entity.CprogramUsedArgvAsInput;
+import dynamicSlice.usecase.in.DynamicSliceUseCaseInput;
 
-public class CprogramConverterToCUsedArgvAsInput implements CprogramConverter {
-	
-	CprogramUsedArgvAsInput convertedProgram;
+public class ProgramConversionAdapter {
+
+    DynamicSliceUseCaseInput useCaseInput;
 	
 	StudentProgramDTO studentProgramDTO;
 	
@@ -112,32 +112,20 @@ public class CprogramConverterToCUsedArgvAsInput implements CprogramConverter {
             "    convertSpecialCharacter110598067(inputData,\"*BaS403\",'\\\\');\n" + 
             "}\n";
 	
-	public CprogramConverterToCUsedArgvAsInput(StudentProgramDTO studentProgramDTO) {
+	public ProgramConversionAdapter(StudentProgramDTO studentProgramDTO) {
 		this.studentProgramDTO = studentProgramDTO;
 		this.programContent = studentProgramDTO.getcProgramContent();
 		this.removeComments();
         this.stackOfLineChanges = new ArrayDeque<InsertedLines>();
 	}
-
-	public CprogramUsedArgvAsInput generateCprogramExpertUsedArgvAsInput() {
-		convertedProgram = new CprogramUsedArgvAsInput();
-		convertedProgram.setcFileName(this.studentProgramDTO.getcFileName());
-		convertedProgram.setcFileNameWithoutExtension(generateCFileNameWithoutExtension(this.studentProgramDTO.getcFileName()));
-		convertedProgram.setQuetionID(this.studentProgramDTO.getQuetionID());
-		convertedProgram.setStudentID(this.studentProgramDTO.getStudentID());
-		convertedProgram.setInputData(this.convertInputDataInOneLine(this.studentProgramDTO.getInputData()));
-		convertedProgram.setProgramContent(this.programContent);
-		convertedProgram.setLineNumbersOfOutputStatement(this.findLineNumbersOfOutputStatement());
-		return convertedProgram;
-	}
 	
     private List<Integer> findLineNumbersOfOutputStatement() {
-    	CCoverageService cCoverageServiceservice= new CCoverageServiceBuilder().buildStudentID(this.convertedProgram.getStudentID())
-    	.buildQuetionID(this.convertedProgram.getQuetionID())
-    	.buildCFileName(this.convertedProgram.getcFileName())
-    	.buildCFileNameWithOutExtension(this.generateCFileNameWithoutExtension(this.studentProgramDTO.getcFileName()))
-    	.buildInputDataAtCMD(this.convertedProgram.getInputData())
-    	.buildProgramContent(this.convertedProgram.getProgramContent())
+    	CCoverageService cCoverageServiceservice= CCoverageServiceBuilder.newInstance()
+                .buildStudentID(this.useCaseInput.getStudentID())
+    	.buildQuetionID(this.useCaseInput.getQuetionID())
+    	.buildCFileName(this.useCaseInput.getcFileName())
+    	.buildInputDataAtCMD(this.useCaseInput.getInputData())
+    	.buildProgramContent(this.useCaseInput.getProgramContent())
     	.buildFileHandlerTool(new FileUtil())
     	.buildCommandToolFactory(new CommandToolFactoryUbuntuImpl())
     	.build();
@@ -176,7 +164,7 @@ public class CprogramConverterToCUsedArgvAsInput implements CprogramConverter {
                 .replace("\\","*BaS403");
     }
 
-	public void convert(){
+	public DynamicSliceUseCaseInput createDynamicSliceUseCaseInput(){
         this.insertFunctionAtBeginning(this.functionOfConvertInputData);
         this.insertFunctionAtBeginning(this.functionOfConvertSpecialCharacter);
         this.insertFunctionAtBeginning(this.functionOfReadScanf);
@@ -197,7 +185,15 @@ public class CprogramConverterToCUsedArgvAsInput implements CprogramConverter {
         this.insertStatementsForInputProcessing(indexOfLeftCurlyBracketOfMain);
 
         this.convertInputFunction();
-
+        useCaseInput = new DynamicSliceUseCaseInput();
+        useCaseInput.setcFileName(this.studentProgramDTO.getcFileName());
+        useCaseInput.setcFileNameWithoutExtension(generateCFileNameWithoutExtension(this.studentProgramDTO.getcFileName()));
+        useCaseInput.setQuetionID(this.studentProgramDTO.getQuetionID());
+        useCaseInput.setStudentID(this.studentProgramDTO.getStudentID());
+        useCaseInput.setInputData(this.convertInputDataInOneLine(this.studentProgramDTO.getInputData()));
+        useCaseInput.setProgramContent(this.programContent);
+        useCaseInput.setLineNumbersOfOutputStatement(this.findLineNumbersOfOutputStatement());
+        return useCaseInput;
     }
     public List<Integer> convertChangedLineNumbersToOriginalLineNumbers(List<Integer> list) {
         List<Integer> result = list;
@@ -593,7 +589,27 @@ public class CprogramConverterToCUsedArgvAsInput implements CprogramConverter {
         }
         this.programContent = result;
     }
-	
-	
 
+
+    private static class InsertedLines {
+        private int lineNumbersWhereInserted;
+        private int numbersOfLinesInserted;
+
+        public int getLineNumbersWhereInserted() {
+            return lineNumbersWhereInserted;
+        }
+
+        public void setLineNumbersWhereInserted(int lineNumbersWhereInserted) {
+            this.lineNumbersWhereInserted = lineNumbersWhereInserted;
+        }
+
+        public int getNumbersOfLinesInserted() {
+            return numbersOfLinesInserted;
+        }
+
+        public void setNumbersOfLinesInserted(int numbersOfLinesInserted) {
+            this.numbersOfLinesInserted = numbersOfLinesInserted;
+        }
+
+    }
 }

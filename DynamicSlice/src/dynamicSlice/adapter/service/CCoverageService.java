@@ -12,7 +12,7 @@ import dynamicSlice.adapter.commandTool.compiler.MyCompiler;
 import dynamicSlice.adapter.commandTool.factory.CommandToolFactory;
 import dynamicSlice.adapter.commandTool.gcov.GcovTool;
 import dynamicSlice.adapter.fileHandler.FileHandlerTool;
-import dynamicSlice.usecase.out.FileRepository;
+
 
 public class CCoverageService {
 	
@@ -35,14 +35,18 @@ public class CCoverageService {
 	private FileHandlerTool fileTool;
 
 	private String cFileNameWithoutExtension;
-    
-    public CCoverageService() {
-    }
-	
-    public CCoverageService(FileHandlerTool fileRepository,CommandToolFactory factory) {
-    	this.fileTool = fileRepository;
-    	this.factory = factory;
-    }
+
+	public CCoverageService(String cFileName, String cFileNameWithoutExtension, String programContent, String workdirectory, String studentID, int quetionID, String inputDataAtCMD,  CommandToolFactory factory, FileHandlerTool fileTool) {
+		this.cFileName = cFileName;
+		this.cFileNameWithoutExtension = cFileNameWithoutExtension;
+		this.programContent = programContent;
+		this.workdirectory = workdirectory;
+		this.studentID = studentID;
+		this.quetionID = quetionID;
+		this.inputDataAtCMD = inputDataAtCMD;
+		this.factory = factory;
+		this.fileTool = fileTool;
+	}
     
     public void analyze() {
     	this.initializeWorkdirectory("/home/aaron/Desktop/GcovWorkDirectory/"+this.quetionID+File.separator+studentID+File.separator);
@@ -147,10 +151,6 @@ public class CCoverageService {
 	
 	private void initializeWorkdirectory(String workdirectory) {
 		this.workdirectory = workdirectory;
-	}
-
-	public void setCFileNameWithOutExtension(String cFileNameWithoutExtension) {
-		this.cFileNameWithoutExtension = cFileNameWithoutExtension;
 	}
 
 }

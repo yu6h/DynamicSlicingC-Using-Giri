@@ -1,4 +1,4 @@
-package dynamicSlice.usecase.in;
+package dynamicSlice.usecase.out;
 
 import dynamicSlice.usecase.out.FileRepository;
 

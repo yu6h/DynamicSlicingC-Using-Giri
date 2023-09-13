@@ -3,51 +3,69 @@ package dynamicSlice.adapter.service;
 import dynamicSlice.adapter.commandTool.factory.CommandToolFactory;
 import dynamicSlice.adapter.fileHandler.FileHandlerTool;
 
+import java.util.List;
+import java.util.Optional;
+
 
 public class CCoverageServiceBuilder {
-	
-	private CCoverageService cCoverageService;
-	
-	public CCoverageServiceBuilder() {
-		this.cCoverageService = new CCoverageService();
-	}
+    private String cFileName;
+
+    private String programContent;
+
+    private String cFileNameWithoutExtension;
+
+    private String studentID;
+
+    private int quetionID;
+
+    private String inputDataAtCMD;
+
+    private CommandToolFactory factory;
+
+    private FileHandlerTool fileTool;
+
+
+
+    public static CCoverageServiceBuilder newInstance(){
+        return new CCoverageServiceBuilder();
+    }
 	
     public CCoverageServiceBuilder buildCFileName(String cFileName) {
-        this.cCoverageService.setCFileName(cFileName);
+        this.cFileName = cFileName;
         return this;
     }
 	
     public CCoverageServiceBuilder buildProgramContent(String programContent) {
-        this.cCoverageService.setProgramContent(programContent);
+        this.programContent = programContent;
         return this;
     }
 
     public CCoverageServiceBuilder buildStudentID(String studentID) {
-        this.cCoverageService.setStudentID(studentID);
+        this.studentID = studentID;
         return this;
     }
     public CCoverageServiceBuilder buildQuetionID(int quetionID) {
-        this.cCoverageService.setQuetionID(quetionID);
+        this.quetionID = quetionID;
         return this;
     }
     public CCoverageServiceBuilder buildInputDataAtCMD(String inputDataAtCMD) {
-        this.cCoverageService.setInputDataAtCMD(inputDataAtCMD);
+        this.inputDataAtCMD = inputDataAtCMD;
         return this;
     }
     public CCoverageServiceBuilder buildCommandToolFactory(CommandToolFactory factory) {
-        this.cCoverageService.setFactory(factory);
+        this.factory = factory;
         return this;
     }
     public CCoverageServiceBuilder buildFileHandlerTool(FileHandlerTool fileTool) {
-        this.cCoverageService.setFileTool(fileTool);
+        this.fileTool = fileTool;
         return this;
     }
     public CCoverageService build() {
-        return this.cCoverageService;
+        return new CCoverageService( cFileName,cFileNameWithoutExtension,  programContent,  "",  studentID,  quetionID,  inputDataAtCMD,  factory,  fileTool);
     }
 
 	public CCoverageServiceBuilder buildCFileNameWithOutExtension(String cFileNameWithoutExtension) {
-		this.cCoverageService.setCFileNameWithOutExtension(cFileNameWithoutExtension);
+		this.cFileNameWithoutExtension =cFileNameWithoutExtension;
 		return this;
 	}
 	
