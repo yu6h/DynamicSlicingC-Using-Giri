@@ -150,7 +150,7 @@ public class GiriImpl implements Giri{
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (InterruptedException e) {
-				System.out.println("process of make is interrupted!");
+//				System.out.println("process of make is interrupted!");
             }finally {
 				p.destroy();
 			}
