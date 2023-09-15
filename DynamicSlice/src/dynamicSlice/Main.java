@@ -40,7 +40,8 @@ public class Main {
 				+ "   \n"
 				+ "   return z;\n"
 				+ "}");
-		List<Integer> lineNumbersOfResult = dynamciSlice.execute().getLineNumbersOfDynamicSlice();
+		DynamicSliceResult result =dynamciSlice.execute();
+		List<Integer> lineNumbersOfResult = result.getLineNumbersOfDynamicSlice();
 		for(Integer lineNumber:lineNumbersOfResult) {
 			System.out.println(lineNumber);
 		}
