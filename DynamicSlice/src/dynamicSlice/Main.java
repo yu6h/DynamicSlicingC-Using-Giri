@@ -39,7 +39,7 @@ public class Main {
 				+ "    printf(\"%d\\n\", z);\n"
 				+ "   \n"
 				+ "   return z;\n"
-				+ "}\n");
+				+ "}");
 		List<Integer> lineNumbersOfResult = dynamciSlice.execute().getLineNumbersOfDynamicSlice();
 		for(Integer lineNumber:lineNumbersOfResult) {
 			System.out.println(lineNumber);

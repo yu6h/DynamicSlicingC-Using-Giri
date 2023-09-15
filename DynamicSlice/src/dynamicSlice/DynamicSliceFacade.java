@@ -46,13 +46,11 @@ public class DynamicSliceFacade {
 
 		List<Integer> lineNumbersOfDynamicSlicingInConvertedProgram = output.getLineNumbersOfDynamicSlicingInConvertedProgram();
 		
-		lineNumbersOfDynamicSlicingInConvertedProgram = adapter.convertChangedLineNumbersToOriginalLineNumbers(lineNumbersOfDynamicSlicingInConvertedProgram);
-
-		List<Integer> lineNumbersOfCoveredOutputStatement = adapter.convertChangedLineNumbersToOriginalLineNumbers(input.getLineNumbersOfOutputStatement());
+		List<Integer> lineNumbersOfDynamicSlicingInOriginalProgram = adapter.convertChangedLineNumbersToOriginalLineNumbers(lineNumbersOfDynamicSlicingInConvertedProgram);
 
 		DynamicSliceResult result = new DynamicSliceResult();
-		result.setLineNumbersOfCoveredOutputStatement(lineNumbersOfCoveredOutputStatement);
-		result.setLineNumbersOfDynamicSlice(lineNumbersOfDynamicSlicingInConvertedProgram);
+
+		result.setLineNumbersOfDynamicSlice(lineNumbersOfDynamicSlicingInOriginalProgram);
 		return result;
 	}
 
