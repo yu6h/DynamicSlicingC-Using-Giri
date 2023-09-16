@@ -9,7 +9,7 @@ Ubuntu 22.04.3 LTS，需安裝gcc,gcov,docker<br />
 `sudo docker run --name giriContainer -d -i --restart=unless-stopped liuml07/giri /bin/bash`<br />
 
 ## 說明:
-使用giri( https://github.com/liuml07/giri ) 對使用標準輸入流（scanf、gets...等函式）的C語言程式做 dynamic backwards slicing
+使用giri ([liuml07/giri](https://github.com/liuml07/giri)) 對使用標準輸入流（scanf、gets...等函式）的C語言程式做 dynamic backwards slicing
 
 程式切片(Program Slicing)是一種將一個程式的不相關部分去除的技術，令剩餘部分能仍能和原本的某一特定程式行為有一樣的表現。
 而動態切片(Dynamic Slicing)是指在給定特定的輸入條件下，將程式執行過程中，確實對程式指定位置變數的值有影響的語句。
