@@ -1,6 +1,15 @@
 # DynamicSlicingC-Using-Giri
 
-使用giri(https://github.com/liuml07/giri)做 dynamic backwards slicing
+## 環境設置:
+Ubuntu 22.04.3 LTS，需安裝gcc,gcov,docker<br />
+使用docker指令讓giri在背景執行，<br />
+指令如下:<br />
+`sudo chmod 777 /var/run/docker.sock` <br />
+`docker pull liuml07/giri`<br />
+`sudo docker run --name giriContainer -d -i --restart=unless-stopped liuml07/giri /bin/bash`<br />
+
+## 說明:
+使用giri(https://github.com/liuml07/giri)對使用標準輸入流（scanf、gets...等函式）的C語言程式做 dynamic backwards slicing
 
 程式切片(Program Slicing)是一種將一個程式的不相關部分去除的技術，令剩餘部分 能仍能和原本的某一特定程式行為有一樣的表現。
 而動態切片(Dynamic Slicing)是指在給定特定的輸入條件下，將程式執行過程中，確實對程式指定位置變數的值有影響的語句。
@@ -38,31 +47,22 @@
 29.    return z;
 30.}
 ```
-在給予x = 10的情況下，針對第27行做動態切片，會得到的行號為9, 22, 27。
+在給予x = 10的情況下，針對第27行做動態切片，會得到的行號為9, 22, 27。<br />
+因giri不支援從標準輸入流(scanf、getchar、gets、fgets)取得輸入的輸入方式，僅支援命令列的輸入<br />
 
-因giri不支援從標準輸入流(scanf、getchar、gets、fgets)取得輸入的輸入方式，僅支援命令列的輸入
+本程式以Clean Architecture的方式，<br />
+將C語言程式碼插入自定義的函式且轉換輸入字串後，<br />
+透過regular expression偵測程式碼須轉換的地方。<br />
+將整個程式碼轉換成符合命令列的輸入的形式，<br />
+再使用gcov工具得到程式覆蓋率後，<br />
+針對每一個被覆蓋的輸出函式語句，<br />
+令giri做dynamic backwards slicing，<br />
+得到所有的動態切片行號後。<br />
+再還原成原始程式碼的行數，<br />
+得到該程式在這次執行過程中輸出函式語句的動態切片的結果。<br />
 
-本程式以Clean Architecture的方式，
-
-將C語言程式碼插入自定義的函式且轉換輸入字串後，
-
-透過regular expression偵測程式碼須轉換的地方。
-
-將整個程式碼轉換成符合命令列的輸入的形式，
-
-再使用gcov工具得到程式覆蓋率後，
-
-針對每一個被覆蓋的輸出函式語句，
-
-令giri做dynamic backwards slicing，
-
-得到全部的動態切片行號後。
-
-再還原成原始程式碼的行數，
-
-得到該程式在這次執行過程中輸出函式語句的動態切片的結果。
-
-以下面這個程式碼舉例：
+## 舉例說明
+以下面這個程式碼為例：
 
 ```no-highlight
 1. #include <math.h>
