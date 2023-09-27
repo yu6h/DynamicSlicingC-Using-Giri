@@ -72,9 +72,8 @@ public class GiriAdapter implements DynamicSliceToolAdapter{
 	public List<Integer> getLineNumbersOfDynamicSlice() {
 		return this.lineNumbersOfDynamicSlice;
 	}
-	
 	@Override
-	protected void finalize() {
+	public void deleteDirectory() {
 		this.giriFileHandler.deleteWorkDirectory(new File(this.workDirectory));
 	}
 

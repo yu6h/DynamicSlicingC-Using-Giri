@@ -9,5 +9,6 @@ public interface DynamicSliceToolAdapter {
 	void setPreprocessedCprogramContent(String preprocessedprogramContent);
 	void setTargetLineNumber(int lineNumber);
 	void execute();
+	void deleteDirectory();
 	List<Integer> getLineNumbersOfDynamicSlice();
 }

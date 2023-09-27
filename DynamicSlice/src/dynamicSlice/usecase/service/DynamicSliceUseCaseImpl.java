@@ -43,6 +43,7 @@ public class DynamicSliceUseCaseImpl implements DynamicSliceUseCase {
 			List<Integer> lineNumbersOfDynamicSlice = this.dynamicSliceTool.getLineNumbersOfDynamicSlice();
 			lineNumbersSet.addAll(lineNumbersOfDynamicSlice);
 		}
+		this.dynamicSliceTool.deleteDirectory();
 		List<Integer> linNumbersOfSliceResults = new ArrayList<Integer>(lineNumbersSet);
 		DynamicSliceUseCaseOutput output = new DynamicSliceUseCaseOutput();
 		output.setLineNumbersOfDynamicSlicing(linNumbersOfSliceResults);
