@@ -1,29 +1,92 @@
 package dynamicSlice.adapter.giriAdapter;
 
 
+import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
+import dynamicSlice.adapter.fileHandler.GiriFileHandler;
+import dynamicSlice.usecase.service.DynamicSliceToolAdapter;
 
-import dynamicSlice.usecase.out.Giri;
-import dynamicSlice.usecase.out.FileRepository;
-
-public class GiriImpl implements Giri{
+import java.util.ArrayList;
+public class GiriAdapter implements DynamicSliceToolAdapter{
 	
 	private String containerName;
+	private String studentID;
+	private int questionID;
+	private String workDirectory;
+	private String workDirectoryInContainer;
+	private GiriFileHandler giriFileHandler;
+	private String cProgramFileName;
+	private String cFileNameWithoutExtension;
+	private List<Integer> lineNumbersOfDynamicSlice;
+
 	
-	public void setContainerName(String containerName) {
-		this.containerName = containerName;
+	public GiriAdapter(GiriFileHandler giriFileHandler) {
+		this.giriFileHandler = giriFileHandler;
+		this.lineNumbersOfDynamicSlice = new ArrayList<Integer>();
+		this.containerName = "giriContainer";
+	}
+	@Override
+	public void iniitilizeDirectory(String studentID,int questionID,String cProgramFileName) {
+		this.studentID = studentID;
+		this.questionID = questionID;
+		this.cProgramFileName = cProgramFileName;
+		this.cFileNameWithoutExtension = cProgramFileName.substring(0, cProgramFileName.indexOf("."));
+		this.workDirectory = "/home/aaron/Desktop/GiriWorkDirectory/"+ this.studentID+"/"
+				+ this.questionID + "/";
+		this.workDirectoryInContainer = "/giri/test/UnitTests/ST"+this.studentID+"HW"+ this.questionID +"/";
+		this.giriFileHandler.deleteWorkDirectory(new File(this.workDirectory));
+		this.giriFileHandler.createWorkDirectory(new File(this.workDirectory));
+	}
+	
+	@Override
+	public void setInputData(String inputData) {
+		// TODO Auto-generated method stub
+		this.giriFileHandler.writeMakeFile(this.workDirectory, this.cFileNameWithoutExtension, inputData);
 	}
 
-	public void copyMakeFileIntoContainer(String workDirectory, String workDirectoryInContainer) {
+	@Override
+	public void setPreprocessedCprogramContent(String preprocessedprogramContent) {
+		this.giriFileHandler.writePreprocessedCprogramFile(this.workDirectory, this.cProgramFileName, preprocessedprogramContent);
+	}
+
+	@Override
+	public void setTargetLineNumber(int lineNumber) {
+		this.giriFileHandler.writeLocTxtFile(this.workDirectory, this.cProgramFileName, lineNumber);
+	}
+
+	@Override
+	public void execute() {
+		this.deleteWorkDirectoryInContainer(this.workDirectoryInContainer);
+		this.createWorkDirectoryInContainer(this.workDirectoryInContainer);
+		this.copyMakeFileIntoContainer(this.workDirectory, this.workDirectoryInContainer);
+		this.copyLotTxtFileIntoContainer(this.workDirectory, this.workDirectoryInContainer);
+		this.copyCProgramFileIntoContainer(this.workDirectory, workDirectoryInContainer, this.cProgramFileName);
+		this.giriFileHandler.deleteSliceLocFile(this.workDirectory, this.cFileNameWithoutExtension);
+		this.makeAndDownloadSlicLocFileIntoWorkDirectory(workDirectoryInContainer, workDirectory, cFileNameWithoutExtension);
+		this.lineNumbersOfDynamicSlice = this.giriFileHandler.readSliceLocFile(workDirectory, cFileNameWithoutExtension);
+	}
+
+	@Override
+	public List<Integer> getLineNumbersOfDynamicSlice() {
+		return this.lineNumbersOfDynamicSlice;
+	}
+	
+	@Override
+	protected void finalize() {
+		this.giriFileHandler.deleteWorkDirectory(new File(this.workDirectory));
+	}
+
+	private void copyMakeFileIntoContainer(String workDirectory, String workDirectoryInContainer) {
 		copyFileIntoContainer(this.containerName, "Makefile" , workDirectory, workDirectoryInContainer);
 	}
 	
-	public void copyLotTxtFileIntoContainer(String workDirectory, String workDirectoryInContainer) {
+	private void copyLotTxtFileIntoContainer(String workDirectory, String workDirectoryInContainer) {
 		copyFileIntoContainer(this.containerName, "loc.txt" , workDirectory, workDirectoryInContainer);
 	}
 
-	public void copyCProgramFileIntoContainer(String workDirectory, String workDirectoryInContainer, String cFileName) {
+	private void copyCProgramFileIntoContainer(String workDirectory, String workDirectoryInContainer, String cFileName) {
 		copyFileIntoContainer(this.containerName, cFileName, workDirectory, workDirectoryInContainer);		
 	}
 	
@@ -46,15 +109,15 @@ public class GiriImpl implements Giri{
 	}
 	//在測資輸入長度較長的情況下 會有.slice.loc檔案等了很久還是抓不下來的情況(如果直接手動進container 下make指令還是可以成功)
 	//如果有這種情況 就下第二次make指令就可以成功得到.slice.loc檔案(裡面是動態切片結果的行號)
-	public void makeAndDownloadSlicLocFileIntoWorkDirectory(String workDirectoryInContainer, String workDirectory
-			,String cFileNameWithoutExtension,FileRepository fileHandler) {
+	private void makeAndDownloadSlicLocFileIntoWorkDirectory(String workDirectoryInContainer, String workDirectory
+			,String cFileNameWithoutExtension) {
 		this.doMakeCommandWithTimeLimit(workDirectoryInContainer, 10000);
 		this.downloadSlicLocFileIntoWorkDirectory(workDirectoryInContainer, workDirectory, cFileNameWithoutExtension);
-		boolean fileExist = fileHandler.checkIfSliceLocFileExist(workDirectory, cFileNameWithoutExtension);
+		boolean fileExist = this.giriFileHandler.checkIfSliceLocFileExist(workDirectory, cFileNameWithoutExtension);
 		if(!fileExist) {
 			this.doMakeCommandWithTimeLimit(workDirectoryInContainer, 10000);
 			this.downloadSlicLocFileIntoWorkDirectory(workDirectoryInContainer, workDirectory, cFileNameWithoutExtension);
-			fileExist = fileHandler.checkIfSliceLocFileExist(workDirectory, cFileNameWithoutExtension);
+			fileExist = this.giriFileHandler.checkIfSliceLocFileExist(workDirectory, cFileNameWithoutExtension);
 		}
 		if(fileExist)System.out.println("Dynamic Slicing Succeeded!");
 		else System.out.println("Dynamic Slicing Failed! ");
@@ -73,7 +136,7 @@ public class GiriImpl implements Giri{
 		}
 	}
         
-	public void downloadSlicLocFileIntoWorkDirectory(String workDirectoryInContainer, String workDirectory,String cFileNameWithoutExtension) {
+	private void downloadSlicLocFileIntoWorkDirectory(String workDirectoryInContainer, String workDirectory,String cFileNameWithoutExtension) {
 		String sliceLocFileName = cFileNameWithoutExtension + ".slice.loc";
 		this.downloadFileFromContainer(this.containerName, sliceLocFileName, workDirectoryInContainer, workDirectory);
 	}
@@ -97,7 +160,7 @@ public class GiriImpl implements Giri{
 	}
 
 
-	public void createWorkDirectoryInContainer(String workDirectoryInContainer) {
+	private void createWorkDirectoryInContainer(String workDirectoryInContainer) {
 		Process process = null;
 		String command = String.format("docker exec -i %s mkdir %s", containerName, workDirectoryInContainer);
 		try {
@@ -114,8 +177,8 @@ public class GiriImpl implements Giri{
 		}
 	}
 
-	@Override
-	public void deleteWorkDirectoryInContainer(String workDirectoryInContainer) {
+
+	private void deleteWorkDirectoryInContainer(String workDirectoryInContainer) {
 		Process process = null;
 		String command = String.format("docker exec -i %s rm -r %s", containerName, workDirectoryInContainer);
 		try {
@@ -157,4 +220,8 @@ public class GiriImpl implements Giri{
 			
 		}
 	}
+
+
+
+
 }

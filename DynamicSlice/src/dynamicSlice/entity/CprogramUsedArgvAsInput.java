@@ -37,7 +37,7 @@ public class CprogramUsedArgvAsInput {
 	public void setcFileNameWithoutExtension(String cFileNameWithoutExtension) {
 		this.cFileNameWithoutExtension = cFileNameWithoutExtension;
 	}
-	public int getQuetionID() {
+	public int getQuestionID() {
 		return quetionID;
 	}
 	public void setQuetionID(int quetionID) {
@@ -61,7 +61,7 @@ public class CprogramUsedArgvAsInput {
 	public void setProgramContent(String programContent) {
 		this.programContent = programContent;
 	}
-	public List<Integer> getLineNumbersOfOutputStatement() {
+	public List<Integer> getLineNumbersOfCoveredOutputStatement() {
 		return lineNumbersOfOutputStatement;
 	}
 	public void setLineNumbersOfOutputStatement(List<Integer> lineNumbersOfOutputStatement) {

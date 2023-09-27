@@ -10,9 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import dynamicSlice.usecase.out.FileRepository;
-
-public class FileUtil implements FileRepository, FileHandlerTool{
+public class FileUtil implements FileHandlerTool,GiriFileHandler{
 	
 	public boolean deleteWorkDirectory(File directoryToBeDeleted) {
 	    File[] allContents = directoryToBeDeleted.listFiles();
