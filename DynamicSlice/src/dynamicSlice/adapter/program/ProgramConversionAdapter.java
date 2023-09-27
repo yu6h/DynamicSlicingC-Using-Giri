@@ -117,6 +117,7 @@ public class ProgramConversionAdapter {
 		this.programContent = studentProgramDTO.getcProgramContent();
 		this.removeComments();
         this.stackOfLineChanges = new ArrayDeque<InsertedLines>();
+        useCaseInput = new DynamicSliceUseCaseInput();
 	}
 	
     private List<Integer> findLineNumbersOfOutputStatement() {
@@ -164,8 +165,10 @@ public class ProgramConversionAdapter {
                 .replace("|","*HaF969")
                 .replace("\\","*BaS403");
     }
-
-	public DynamicSliceUseCaseInput createDynamicSliceUseCaseInput(){
+    public DynamicSliceUseCaseInput getDynamicSliceUseCaseInput(){
+        return this.useCaseInput;
+    }
+	public void execute(){
         this.insertFunctionAtBeginning(this.functionOfConvertInputData);
         this.insertFunctionAtBeginning(this.functionOfConvertSpecialCharacter);
         this.insertFunctionAtBeginning(this.functionOfReadScanf);
@@ -186,7 +189,7 @@ public class ProgramConversionAdapter {
         this.insertStatementsForInputProcessing(indexOfLeftCurlyBracketOfMain);
 
         this.convertInputFunction();
-        useCaseInput = new DynamicSliceUseCaseInput();
+
         useCaseInput.setcFileName(this.studentProgramDTO.getcFileName());
         useCaseInput.setcFileNameWithoutExtension(generateCFileNameWithoutExtension(this.studentProgramDTO.getcFileName()));
         useCaseInput.setQuetionID(this.studentProgramDTO.getQuetionID());
@@ -194,7 +197,6 @@ public class ProgramConversionAdapter {
         useCaseInput.setInputData(this.convertInputDataInOneLine(this.studentProgramDTO.getInputData()));
         useCaseInput.setProgramContent(this.programContent);
         useCaseInput.setLineNumbersOfOutputStatement(this.findLineNumbersOfOutputStatement());
-        return useCaseInput;
     }
     public List<Integer> convertChangedLineNumbersToOriginalLineNumbers(List<Integer> list) {
         List<Integer> result = list;

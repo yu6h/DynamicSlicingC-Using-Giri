@@ -38,7 +38,8 @@ public class DynamicSliceFacade {
 	
 	public DynamicSliceResult execute() {
 		ProgramConversionAdapter adapter = new ProgramConversionAdapter(studentProgramDTO);
-		DynamicSliceUseCaseInput input = adapter.createDynamicSliceUseCaseInput();
+		adapter.execute();
+		DynamicSliceUseCaseInput input = adapter.getDynamicSliceUseCaseInput();
 
 		DynamicSliceUseCase dynamicSliceUseCase = new DynamicSliceUseCaseImpl(new GiriAdapter(new FileUtil()));
 
