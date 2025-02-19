@@ -50,8 +50,7 @@ Ubuntu 22.04.3 LTS，需安裝gcc,gcov,docker<br />
 在給予x = 10的情況下，針對第27行做動態切片，會得到的行號為9, 22, 27。<br />
 因giri不支援從標準輸入流(scanf、getchar、gets、fgets)取得輸入的輸入方式，僅支援命令列的輸入<br />
 
-本程式以Clean Architecture的方式，<br />
-將C語言程式碼插入自定義的函式且轉換輸入字串後，<br />
+本程式將C語言程式碼插入自定義的函式且轉換輸入字串後，<br />
 透過regular expression偵測程式碼須轉換的地方。<br />
 將整個程式碼轉換成符合命令列的輸入的形式，<br />
 再使用gcov工具得到程式覆蓋率後，<br />
